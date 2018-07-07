@@ -1,0 +1,22 @@
+{
+  "__type__": "cc.SpriteFrame",
+  "content": {
+    "name": "0001-move-left-07",
+    "texture": "83f77ec1-2f44-43b1-9cb3-ee4d6bf2a9ae",
+    "atlas": "",
+    "rect": [
+      0,
+      0,
+      77,
+      89
+    ],
+    "offset": [
+      -1.5,
+      3.5
+    ],
+    "originalSize": [
+      80,
+      96
+    ]
+  }
+}

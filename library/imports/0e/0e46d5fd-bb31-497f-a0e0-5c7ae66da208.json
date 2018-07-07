@@ -1,0 +1,22 @@
+{
+  "__type__": "cc.SpriteFrame",
+  "content": {
+    "name": "0001-stand-downleft-01",
+    "texture": "584fd98d-39a5-4bbd-99aa-5d537f69f227",
+    "atlas": "",
+    "rect": [
+      0,
+      0,
+      59,
+      90
+    ],
+    "offset": [
+      -2.5,
+      3
+    ],
+    "originalSize": [
+      64,
+      96
+    ]
+  }
+}

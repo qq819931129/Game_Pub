@@ -1,0 +1,22 @@
+{
+  "__type__": "cc.SpriteFrame",
+  "content": {
+    "name": "icon-close-pink",
+    "texture": "af80ffd0-20ca-4908-b0b0-1cbf0a2bb66a",
+    "atlas": "",
+    "rect": [
+      16,
+      16,
+      34,
+      34
+    ],
+    "offset": [
+      0,
+      0
+    ],
+    "originalSize": [
+      66,
+      66
+    ]
+  }
+}

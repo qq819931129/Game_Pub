@@ -1,0 +1,22 @@
+{
+  "__type__": "cc.SpriteFrame",
+  "content": {
+    "name": "0001-die-downright-07",
+    "texture": "637d18af-0cca-4fb3-9d0c-a13ff6250f43",
+    "atlas": "",
+    "rect": [
+      0,
+      0,
+      76,
+      76
+    ],
+    "offset": [
+      -2,
+      2
+    ],
+    "originalSize": [
+      80,
+      80
+    ]
+  }
+}

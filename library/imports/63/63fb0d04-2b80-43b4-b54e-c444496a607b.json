@@ -1,0 +1,22 @@
+{
+  "__type__": "cc.SpriteFrame",
+  "content": {
+    "name": "0001-ackStance-upleft-04",
+    "texture": "02db812e-defb-4e8e-bc8f-736009c1a82e",
+    "atlas": "",
+    "rect": [
+      0,
+      0,
+      61,
+      84
+    ],
+    "offset": [
+      -1.5,
+      2
+    ],
+    "originalSize": [
+      64,
+      88
+    ]
+  }
+}

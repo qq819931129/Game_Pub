@@ -1,0 +1,22 @@
+{
+  "__type__": "cc.SpriteFrame",
+  "content": {
+    "name": "0001-move-right-06",
+    "texture": "885bbb06-b59e-42c1-8910-896b7e340b88",
+    "atlas": "",
+    "rect": [
+      0,
+      0,
+      72,
+      88
+    ],
+    "offset": [
+      0,
+      0
+    ],
+    "originalSize": [
+      72,
+      88
+    ]
+  }
+}

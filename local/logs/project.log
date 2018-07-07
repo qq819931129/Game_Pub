@@ -1,0 +1,53 @@
+2018-07-07T07:09:52.603Z - normal: Load ~/.CocosCreator/settings.json
+2018-07-07T07:09:52.606Z - normal: checking language setting...
+2018-07-07T07:09:52.606Z - normal: Language: zh
+2018-07-07T07:09:53.117Z - success: protocol editor-framework registered
+2018-07-07T07:09:53.117Z - success: protocol app registered
+2018-07-07T07:09:53.117Z - success: protocol theme registered
+2018-07-07T07:09:53.117Z - success: protocol packages registered
+2018-07-07T07:09:53.117Z - success: protocol unpack registerred
+2018-07-07T07:09:53.118Z - success: protocol disable-commonjs registerred
+2018-07-07T07:09:53.369Z - normal: connected!
+2018-07-07T07:09:53.370Z - normal: Check project /Users/joker/Desktop/game
+2018-07-07T07:09:53.371Z - normal: Initializing Cocos2d
+2018-07-07T07:09:53.522Z - normal: Initializing Asset Database
+2018-07-07T07:09:53.549Z - success: protocol uuid registerred
+2018-07-07T07:09:53.549Z - success: protocol db registerred
+2018-07-07T07:09:53.549Z - success: protocol thumbnail registerred
+2018-07-07T07:09:53.549Z - normal: Loading editor/builtin packages
+2018-07-07T07:09:53.565Z - success: anysdk loaded
+2018-07-07T07:09:53.657Z - success: assets loaded
+2018-07-07T07:09:53.660Z - success: builder loaded
+2018-07-07T07:09:53.662Z - success: cocos-analytics loaded
+2018-07-07T07:09:53.665Z - success: console loaded
+2018-07-07T07:09:53.692Z - success: fb-instant-games loaded
+2018-07-07T07:09:53.695Z - success: hierarchy loaded
+2018-07-07T07:09:53.699Z - success: inspector loaded
+2018-07-07T07:09:53.700Z - success: keystore loaded
+2018-07-07T07:09:53.707Z - success: node-library loaded
+2018-07-07T07:09:53.708Z - success: package-asset loaded
+2018-07-07T07:09:53.709Z - success: preferences loaded
+2018-07-07T07:09:53.712Z - success: project-exporter loaded
+2018-07-07T07:09:53.724Z - success: project-importer loaded
+2018-07-07T07:09:53.726Z - success: project-settings loaded
+2018-07-07T07:09:53.729Z - success: ui-kit loaded
+2018-07-07T07:09:53.733Z - success: ui-grid loaded
+2018-07-07T07:09:53.736Z - success: scene loaded
+2018-07-07T07:09:53.737Z - success: sprite-editor loaded
+2018-07-07T07:09:53.740Z - success: store loaded
+2018-07-07T07:09:53.745Z - success: timeline loaded
+2018-07-07T07:09:53.745Z - normal: Loading builtin packages
+2018-07-07T07:09:53.749Z - success: asset-db-debugger loaded
+2018-07-07T07:09:53.749Z - success: color-picker loaded
+2018-07-07T07:09:53.752Z - success: package-manager loaded
+2018-07-07T07:09:53.756Z - success: sdkbox loaded
+2018-07-07T07:09:53.760Z - success: tester loaded
+2018-07-07T07:09:53.763Z - success: ui-kit-preview-extra loaded
+2018-07-07T07:09:53.765Z - success: ui-kit-preview loaded
+2018-07-07T07:09:53.767Z - success: ui-tree loaded
+2018-07-07T07:09:54.466Z - normal: Initializing project /Users/joker/Desktop/game
+2018-07-07T07:09:54.475Z - normal: Loading packages
+2018-07-07T07:09:54.480Z - normal: Watching packages
+2018-07-07T07:09:54.491Z - normal: Run Application
+2018-07-07T07:09:56.685Z - success: preview server running at http://localhost:7456
+2018-07-07T07:10:01.282Z - normal: 1.9.1
