@@ -1,53 +1,56 @@
-2018-07-07T07:09:52.603Z - normal: Load ~/.CocosCreator/settings.json
-2018-07-07T07:09:52.606Z - normal: checking language setting...
-2018-07-07T07:09:52.606Z - normal: Language: zh
-2018-07-07T07:09:53.117Z - success: protocol editor-framework registered
-2018-07-07T07:09:53.117Z - success: protocol app registered
-2018-07-07T07:09:53.117Z - success: protocol theme registered
-2018-07-07T07:09:53.117Z - success: protocol packages registered
-2018-07-07T07:09:53.117Z - success: protocol unpack registerred
-2018-07-07T07:09:53.118Z - success: protocol disable-commonjs registerred
-2018-07-07T07:09:53.369Z - normal: connected!
-2018-07-07T07:09:53.370Z - normal: Check project /Users/joker/Desktop/game
-2018-07-07T07:09:53.371Z - normal: Initializing Cocos2d
-2018-07-07T07:09:53.522Z - normal: Initializing Asset Database
-2018-07-07T07:09:53.549Z - success: protocol uuid registerred
-2018-07-07T07:09:53.549Z - success: protocol db registerred
-2018-07-07T07:09:53.549Z - success: protocol thumbnail registerred
-2018-07-07T07:09:53.549Z - normal: Loading editor/builtin packages
-2018-07-07T07:09:53.565Z - success: anysdk loaded
-2018-07-07T07:09:53.657Z - success: assets loaded
-2018-07-07T07:09:53.660Z - success: builder loaded
-2018-07-07T07:09:53.662Z - success: cocos-analytics loaded
-2018-07-07T07:09:53.665Z - success: console loaded
-2018-07-07T07:09:53.692Z - success: fb-instant-games loaded
-2018-07-07T07:09:53.695Z - success: hierarchy loaded
-2018-07-07T07:09:53.699Z - success: inspector loaded
-2018-07-07T07:09:53.700Z - success: keystore loaded
-2018-07-07T07:09:53.707Z - success: node-library loaded
-2018-07-07T07:09:53.708Z - success: package-asset loaded
-2018-07-07T07:09:53.709Z - success: preferences loaded
-2018-07-07T07:09:53.712Z - success: project-exporter loaded
-2018-07-07T07:09:53.724Z - success: project-importer loaded
-2018-07-07T07:09:53.726Z - success: project-settings loaded
-2018-07-07T07:09:53.729Z - success: ui-kit loaded
-2018-07-07T07:09:53.733Z - success: ui-grid loaded
-2018-07-07T07:09:53.736Z - success: scene loaded
-2018-07-07T07:09:53.737Z - success: sprite-editor loaded
-2018-07-07T07:09:53.740Z - success: store loaded
-2018-07-07T07:09:53.745Z - success: timeline loaded
-2018-07-07T07:09:53.745Z - normal: Loading builtin packages
-2018-07-07T07:09:53.749Z - success: asset-db-debugger loaded
-2018-07-07T07:09:53.749Z - success: color-picker loaded
-2018-07-07T07:09:53.752Z - success: package-manager loaded
-2018-07-07T07:09:53.756Z - success: sdkbox loaded
-2018-07-07T07:09:53.760Z - success: tester loaded
-2018-07-07T07:09:53.763Z - success: ui-kit-preview-extra loaded
-2018-07-07T07:09:53.765Z - success: ui-kit-preview loaded
-2018-07-07T07:09:53.767Z - success: ui-tree loaded
-2018-07-07T07:09:54.466Z - normal: Initializing project /Users/joker/Desktop/game
-2018-07-07T07:09:54.475Z - normal: Loading packages
-2018-07-07T07:09:54.480Z - normal: Watching packages
-2018-07-07T07:09:54.491Z - normal: Run Application
-2018-07-07T07:09:56.685Z - success: preview server running at http://localhost:7456
-2018-07-07T07:10:01.282Z - normal: 1.9.1
+2018-07-14T14:59:50.784Z - normal: Load ~/.CocosCreator/settings.json
+2018-07-14T14:59:50.788Z - normal: checking language setting...
+2018-07-14T14:59:50.788Z - normal: Language: zh
+2018-07-14T14:59:51.536Z - success: protocol editor-framework registered
+2018-07-14T14:59:51.536Z - success: protocol app registered
+2018-07-14T14:59:51.536Z - success: protocol theme registered
+2018-07-14T14:59:51.536Z - success: protocol packages registered
+2018-07-14T14:59:51.537Z - success: protocol unpack registerred
+2018-07-14T14:59:51.537Z - success: protocol disable-commonjs registerred
+2018-07-14T14:59:51.724Z - normal: connected!
+2018-07-14T14:59:51.726Z - normal: Check project /Users/joker/Desktop/Game_Pub
+2018-07-14T14:59:51.729Z - normal: Initializing Cocos2d
+2018-07-14T14:59:51.974Z - normal: Initializing Asset Database
+2018-07-14T14:59:52.015Z - success: protocol uuid registerred
+2018-07-14T14:59:52.016Z - success: protocol db registerred
+2018-07-14T14:59:52.016Z - success: protocol thumbnail registerred
+2018-07-14T14:59:52.016Z - normal: Loading editor/builtin packages
+2018-07-14T14:59:52.037Z - success: anysdk loaded
+2018-07-14T14:59:52.160Z - success: assets loaded
+2018-07-14T14:59:52.164Z - success: builder loaded
+2018-07-14T14:59:52.166Z - success: cocos-analytics loaded
+2018-07-14T14:59:52.170Z - success: console loaded
+2018-07-14T14:59:52.202Z - success: fb-instant-games loaded
+2018-07-14T14:59:52.207Z - success: hierarchy loaded
+2018-07-14T14:59:52.212Z - success: inspector loaded
+2018-07-14T14:59:52.214Z - success: keystore loaded
+2018-07-14T14:59:52.223Z - success: node-library loaded
+2018-07-14T14:59:52.225Z - success: package-asset loaded
+2018-07-14T14:59:52.227Z - success: preferences loaded
+2018-07-14T14:59:52.231Z - success: project-exporter loaded
+2018-07-14T14:59:52.246Z - success: project-importer loaded
+2018-07-14T14:59:52.249Z - success: project-settings loaded
+2018-07-14T14:59:52.254Z - success: ui-kit loaded
+2018-07-14T14:59:52.260Z - success: ui-grid loaded
+2018-07-14T14:59:52.264Z - success: scene loaded
+2018-07-14T14:59:52.266Z - success: sprite-editor loaded
+2018-07-14T14:59:52.270Z - success: store loaded
+2018-07-14T14:59:52.275Z - success: timeline loaded
+2018-07-14T14:59:52.276Z - normal: Loading builtin packages
+2018-07-14T14:59:52.279Z - success: asset-db-debugger loaded
+2018-07-14T14:59:52.280Z - success: color-picker loaded
+2018-07-14T14:59:52.283Z - success: package-manager loaded
+2018-07-14T14:59:52.288Z - success: sdkbox loaded
+2018-07-14T14:59:52.293Z - success: tester loaded
+2018-07-14T14:59:52.297Z - success: ui-kit-preview-extra loaded
+2018-07-14T14:59:52.300Z - success: ui-kit-preview loaded
+2018-07-14T14:59:52.303Z - success: ui-tree loaded
+2018-07-14T14:59:53.335Z - normal: Initializing project /Users/joker/Desktop/Game_Pub
+2018-07-14T14:59:53.337Z - normal: Loading packages
+2018-07-14T14:59:53.342Z - normal: Watching packages
+2018-07-14T14:59:53.353Z - normal: Run Application
+2018-07-14T14:59:54.412Z - success: preview server running at http://localhost:7456
+2018-07-14T14:59:58.709Z - normal: 1.9.1
+2018-07-14T15:08:56.287Z - warn: The Node referenced by component "battle_Control" is invalid. Detailed information:
+Node path: "PK"
+
