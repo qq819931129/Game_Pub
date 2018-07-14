@@ -135,7 +135,7 @@ cc.Class({
 		//let fulinList = [{id: "01",point: 1},{id: "02",point: 2},{id: "03",point: 3}];//------符灵技能栏
 		if (checkId == 1) {
 			//var enemyList = [{y: 4,x: 9,point: 1},{y: 2,x: 9,point: 2},{y: 0,x: 9,point: 3},{y: 3,x: 7,point: 4},{y: 1,x: 7,point: 5}];//----敌方阵容
-			var enemyList = [{ y: 4, x: 9, point: 1 }];
+			var enemyList = [{ y: 3, x: 8, point: 1 }];
 		}
 		if (checkId == 2) {
 			var enemyList = [{ y: 3, x: 9, point: 1 }, { y: 1, x: 9, point: 2 }, { y: 0, x: 9, point: 3 }, { y: 0, x: 7, point: 4 }, { y: 1, x: 7, point: 5 }]; //----敌方阵容
@@ -213,11 +213,14 @@ cc.Class({
 			var heroList = self.hero_list;
 			for (var _j4 = 0; _j4 < heroList.length; _j4++) {
 				//---------匹配英雄表
-				//if (heroList[j].groupId == 1) {
-				if (heroList[_j4].heroName == "hero_6") {
-					var checkRoute = this.routeDirection(heroRouteOkList.list[heroRouteOkList.list.length - 1], self.getNearEnemy(heroList[_j4], heroList));
-					self.matchOKHeroRoute(heroList[_j4].name, self.getNearEnemy(heroList[_j4], heroList)); //-------传参英雄名和格子对象给确认数组
-					console.log(self.getNearEnemy(heroList[_j4], heroList), heroRouteOkList);
+				if (heroList[_j4].groupId == 1) {
+					//if (heroList[j].heroName == "hero_6") {
+					var checkRoute = self.routeDirection(heroList[_j4], self.getNearEnemy(heroList[_j4], heroList));
+					heroList[_j4].route = checkRoute;
+					heroList[_j4].state = 11;
+					heroList[_j4].indexNum = 0;
+					//self.matchOKHeroRoute(heroList[j].name,self.getNearEnemy(heroList[j],heroList));//-------传参英雄名和格子对象给确认数组
+					console.log(heroList[_j4], checkRoute, self.getNearEnemy(heroList[_j4], heroList));
 				}
 			}
 		});
@@ -401,7 +404,14 @@ cc.Class({
 					} else {
 						boxItem = boxItem.getComponent("batBox_basic");
 					}
-					if (!boxItem.bat_obstacle) {
+					var enemyList2 = [];
+					for (var z = 0; z < self.hero_list.length; z++) {
+						if (self.hero_list[z].point == boxItem.bat_hero && self.hero_list[z].groupId == 2) {
+							enemyList2.push(self.hero_list[z]);
+						}
+					}
+
+					if (!boxItem.bat_obstacle && enemyList2.length == 0) {
 						if (heroRouteOkList.lastId == -1) {
 							//--------------------------------还没记录到上一次的格子名字，证明是在获取第一次路线信息
 							for (var i = 0; i < self.hero_list.length; i++) {
@@ -695,6 +705,13 @@ cc.Class({
 								break;
 							}
 						}
+						for (var _o = 0; _o < tempEnemyList.length; _o++) {
+							//------------------当前循环九宫格格子是否位于障碍物格子上下左右侧的格子位置上，是的话就不能纳入赋值ghf处理
+							if (checkTarget.x == tempEnemyList[_o].x && checkTarget.y == tempEnemyList[_o].y) {
+								isEnemy2 = 1;
+								break;
+							}
+						}
 					}
 					if (isClose == 0 && isOpen == 0 && isObstacle == 0 && isObsEx == 0) {
 						//-------------如任何检查判断为未触发，则视为当前格子是新处理格子
@@ -816,6 +833,8 @@ cc.Class({
 				var _isClose = 0; //-----------------是否已记录在确认数组标识   0：不是   1：是
 				var _isObstacle = 0; //--------------是否障碍物   0：不是   1：是
 				var _isObsEx = 0; //-----------------当前格子是否位于障碍物格子上下左右侧的格子位置上，用于判断是否处于斜格处理   0：不是   1：是
+				var isEnemy = false;
+				var isEnemy2 = 0;
 				var _tempCheckTarget3 = this.batBox.getChildByName("batBox_y" + (parent.y + directionList[_i7].y) + "_x" + (parent.x + directionList[_i7].x));
 				if (_tempCheckTarget3) {
 					//----------是否存在格子
@@ -823,20 +842,22 @@ cc.Class({
 					if (checkTarget.bat_obstacle) {
 						//---------------------当前循环九宫格格子是障碍物
 						_isObstacle = 1;
+					} else if (enemyList2.length != 0) {
+						isEnemy = true;
 					} else {
 						for (var _x2 = 0; _x2 < closeList.length; _x2++) {
 							//------------------当前循环九宫格格子是否已记录在确认数组
 							if (checkTarget.x == closeList[_x2].x && checkTarget.y == closeList[_x2].y) {
-								for (var _o = 0; _o < _obsExList.length; _o++) {
+								for (var _o2 = 0; _o2 < _obsExList.length; _o2++) {
 									//------------------当前循环九宫格格子是否位于障碍物格子上下左右侧的格子位置上，是的话就不能纳入赋值ghf处理
-									if (checkTarget.x == _obsExList[_o].x && checkTarget.y == _obsExList[_o].y) {
+									if (checkTarget.x == _obsExList[_o2].x && checkTarget.y == _obsExList[_o2].y) {
 										_isObsEx = 1;
 										break;
 									}
 								}
-								for (var _o2 = 0; _o2 < tempEnemyList.length; _o2++) {
+								for (var _o3 = 0; _o3 < tempEnemyList.length; _o3++) {
 									//------------------当前循环九宫格格子是否位于障碍物格子上下左右侧的格子位置上，是的话就不能纳入赋值ghf处理
-									if (checkTarget.x == tempEnemyList[_o2].x && checkTarget.y == tempEnemyList[_o2].y) {
+									if (checkTarget.x == tempEnemyList[_o3].x && checkTarget.y == tempEnemyList[_o3].y) {
 										isEnemy2 = 1;
 										break;
 									}
