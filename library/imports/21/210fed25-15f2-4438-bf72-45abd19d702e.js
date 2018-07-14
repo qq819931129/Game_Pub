@@ -135,7 +135,7 @@ cc.Class({
 		//let fulinList = [{id: "01",point: 1},{id: "02",point: 2},{id: "03",point: 3}];//------符灵技能栏
 		if (checkId == 1) {
 			//var enemyList = [{y: 4,x: 9,point: 1},{y: 2,x: 9,point: 2},{y: 0,x: 9,point: 3},{y: 3,x: 7,point: 4},{y: 1,x: 7,point: 5}];//----敌方阵容
-			var enemyList = [{ y: 3, x: 8, point: 1 }];
+			var enemyList = [{ y: 3, x: 5, point: 1 }];
 		}
 		if (checkId == 2) {
 			var enemyList = [{ y: 3, x: 9, point: 1 }, { y: 1, x: 9, point: 2 }, { y: 0, x: 9, point: 3 }, { y: 0, x: 7, point: 4 }, { y: 1, x: 7, point: 5 }]; //----敌方阵容
@@ -713,7 +713,7 @@ cc.Class({
 							}
 						}
 					}
-					if (isClose == 0 && isOpen == 0 && isObstacle == 0 && isObsEx == 0) {
+					if (isClose == 0 && isOpen == 0 && isObstacle == 0 && isObsEx == 0 && !isEnemy && isEnemy2 == 0) {
 						//-------------如任何检查判断为未触发，则视为当前格子是新处理格子
 						var H_x = Math.abs(tempEndTarget.x - checkTarget.x);
 						var H_y = Math.abs(tempEndTarget.y - checkTarget.y);
