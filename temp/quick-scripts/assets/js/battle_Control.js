@@ -135,7 +135,7 @@ cc.Class({
 		//let fulinList = [{id: "01",point: 1},{id: "02",point: 2},{id: "03",point: 3}];//------符灵技能栏
 		if (checkId == 1) {
 			//var enemyList = [{y: 4,x: 9,point: 1},{y: 2,x: 9,point: 2},{y: 0,x: 9,point: 3},{y: 3,x: 7,point: 4},{y: 1,x: 7,point: 5}];//----敌方阵容
-			var enemyList = [{ y: 4, x: 9, point: 1 }];
+			var enemyList = [{ y: 3, x: 5, point: 1 }];
 		}
 		if (checkId == 2) {
 			var enemyList = [{ y: 3, x: 9, point: 1 }, { y: 1, x: 9, point: 2 }, { y: 0, x: 9, point: 3 }, { y: 0, x: 7, point: 4 }, { y: 1, x: 7, point: 5 }]; //----敌方阵容
@@ -213,14 +213,33 @@ cc.Class({
 			var heroList = self.hero_list;
 			for (var _j4 = 0; _j4 < heroList.length; _j4++) {
 				//---------匹配英雄表
-				//if (heroList[j].groupId == 1) {
-				if (heroList[_j4].heroName == "hero_6") {
-					var checkRoute = this.routeDirection(heroRouteOkList.list[heroRouteOkList.list.length - 1], self.getNearEnemy(heroList[_j4], heroList));
-					self.matchOKHeroRoute(heroList[_j4].name, self.getNearEnemy(heroList[_j4], heroList)); //-------传参英雄名和格子对象给确认数组
-					console.log(self.getNearEnemy(heroList[_j4], heroList), heroRouteOkList);
+				if (heroList[_j4].groupId == 1) {
+					//if (heroList[j].heroName == "hero_6") {
+					var checkRoute = self.routeDirection(heroList[_j4], self.getNearEnemy(heroList[_j4], heroList));
+					heroList[_j4].route = checkRoute;
+					heroList[_j4].state = 11;
+					heroList[_j4].indexNum = 0;
+					//self.matchOKHeroRoute(heroList[j].name,self.getNearEnemy(heroList[j],heroList));//-------传参英雄名和格子对象给确认数组
+					console.log(heroList[_j4], checkRoute, self.getNearEnemy(heroList[_j4], heroList));
 				}
 			}
 		});
+	},
+	stopMove: function stopMove(point) {
+		var self = this;
+		var heroList = self.hero_list;
+		for (var j = 0; j < heroList.length; j++) {
+			//---------匹配英雄表
+			if (heroList[j].point == point) {
+				//if (heroList[j].heroName == "hero_6") {
+				var checkRoute = self.routeDirection(heroList[j], self.getNearEnemy(heroList[j], heroList));
+				heroList[j].route = checkRoute;
+				heroList[j].state = 11;
+				heroList[j].indexNum = 0;
+				//lf.matchOKHeroRoute(heroList[j].name,self.getNearEnemy(heroList[j],heroList));//-------传参英雄名和格子对象给确认数组
+				//console.log(heroList[j],checkRoute,self.getNearEnemy(heroList[j],heroList));
+			}
+		}
 	},
 	//选取格子高亮   (格子对象)
 	currentBox: function currentBox(boxItem) {
@@ -385,7 +404,14 @@ cc.Class({
 					} else {
 						boxItem = boxItem.getComponent("batBox_basic");
 					}
-					if (!boxItem.bat_obstacle) {
+					var enemyList2 = [];
+					for (var z = 0; z < self.hero_list.length; z++) {
+						if (self.hero_list[z].point == boxItem.bat_hero && self.hero_list[z].groupId == 2) {
+							enemyList2.push(self.hero_list[z]);
+						}
+					}
+
+					if (!boxItem.bat_obstacle && enemyList2.length == 0) {
 						if (heroRouteOkList.lastId == -1) {
 							//--------------------------------还没记录到上一次的格子名字，证明是在获取第一次路线信息
 							for (var i = 0; i < self.hero_list.length; i++) {
@@ -566,7 +592,7 @@ cc.Class({
 	},
 	//A*算法   (原点目标，终点目标)
 	routeDirection: function routeDirection(startTarget, endTarget) {
-		if (startTarget.x == endTarget.x && startTarget.y == endTarget.y) {
+		if (startTarget.x == endTarget.x && startTarget.y == endTarget.y || endTarget.bat_obstacle) {
 			return false;
 		} //---------------如果起点和终点一样就退出方法
 		var openList = []; //---------------九宫格临时存放格子数组
@@ -594,6 +620,11 @@ cc.Class({
 			var obsId_down = null; //-----------当前障碍物格子的下侧格子--临时禁止加入临时数组
 			var obsId_left = null; //-----------当前障碍物格子的左侧格子--临时禁止加入临时数组
 			var obsId_top = null; //------------当前障碍物格子的上侧格子--临时禁止加入临时数组
+			var tempEnemyList = [];
+			var enemId_right = null; //----------当前敌人格子的右侧格子--临时禁止加入临时数组
+			var enemId_down = null; //-----------当前敌人格子的下侧格子--临时禁止加入临时数组
+			var enemId_left = null; //-----------当前敌人格子的左侧格子--临时禁止加入临时数组
+			var enemId_top = null; //------------当前敌人格子的上侧格子--临时禁止加入临时数组
 			for (var i = 0; i < directionList.length; i++) {
 				//------------------获取路线障碍物上下左右格子的数组
 				//计算出九宫格内当前循环的格子是否在战场内  原理：利用格子的行列值进行运算，得出结果异常则不属于战场内格子
@@ -611,6 +642,21 @@ cc.Class({
 							obsExList.push(obsId_right, obsId_down, obsId_left, obsId_top);
 						}
 					}
+					var enemyList2 = [];
+					for (var z = 0; z < this.hero_list.length; z++) {
+						if (this.hero_list[z].point == checkTarget.bat_hero && this.hero_list[z].groupId == 2) {
+							enemyList2.push(this.hero_list[z]);
+						}
+					}
+					if (enemyList2) {
+						if (i == 0 || i == 2 || i == 4 || i == 6) {
+							enemId_right = { y: checkTarget.y + directionList[0].y, x: checkTarget.x + directionList[0].x };
+							enemId_down = { y: checkTarget.y + directionList[2].y, x: checkTarget.x + directionList[2].x };
+							enemId_left = { y: checkTarget.y + directionList[4].y, x: checkTarget.x + directionList[4].x };
+							enemId_top = { y: checkTarget.y + directionList[6].y, x: checkTarget.x + directionList[6].x };
+							tempEnemyList.push(enemId_right, enemId_down, enemId_left, enemId_top);
+						}
+					}
 				}
 			}
 			for (var _i3 = 0; _i3 < directionList.length; _i3++) {
@@ -619,14 +665,24 @@ cc.Class({
 				var isClose = 0; //-----------------是否已记录在确认数组标识   0：不是   1：是
 				var isObstacle = 0; //--------------是否障碍物   0：不是   1：是
 				var isObsEx = 0; //-----------------当前格子是否位于障碍物格子上下左右侧的格子位置上，用于判断是否处于斜格处理   0：不是   1：是
+				var isEnemy = false;
+				var isEnemy2 = 0;
 				//计算出九宫格内当前循环的格子  原理：利用格子的行列值进行运算，得出结果异常则不属于战场内格子
 				var _tempCheckTarget = this.batBox.getChildByName("batBox_y" + (parent.y + directionList[_i3].y) + "_x" + (parent.x + directionList[_i3].x));
 				if (_tempCheckTarget) {
 					//----------是否存在格子
 					var checkTarget = _tempCheckTarget.getComponent("batBox_basic");
+					var enemyList2 = [];
+					for (var z = 0; z < this.hero_list.length; z++) {
+						if (this.hero_list[z].point == checkTarget.bat_hero && this.hero_list[z].groupId == 2) {
+							enemyList2.push(this.hero_list[z]);
+						}
+					}
 					if (checkTarget.bat_obstacle) {
 						//---------------------当前循环九宫格格子是障碍物
 						isObstacle = 1;
+					} else if (enemyList2.length != 0) {
+						isEnemy = true;
 					} else {
 						for (var x = 0; x < closeList.length; x++) {
 							//------------------当前循环九宫格格子是否已记录在确认数组
@@ -649,8 +705,15 @@ cc.Class({
 								break;
 							}
 						}
+						for (var _o = 0; _o < tempEnemyList.length; _o++) {
+							//------------------当前循环九宫格格子是否位于障碍物格子上下左右侧的格子位置上，是的话就不能纳入赋值ghf处理
+							if (checkTarget.x == tempEnemyList[_o].x && checkTarget.y == tempEnemyList[_o].y) {
+								isEnemy2 = 1;
+								break;
+							}
+						}
 					}
-					if (isClose == 0 && isOpen == 0 && isObstacle == 0 && isObsEx == 0) {
+					if (isClose == 0 && isOpen == 0 && isObstacle == 0 && isObsEx == 0 && !isEnemy && isEnemy2 == 0) {
 						//-------------如任何检查判断为未触发，则视为当前格子是新处理格子
 						var H_x = Math.abs(tempEndTarget.x - checkTarget.x);
 						var H_y = Math.abs(tempEndTarget.y - checkTarget.y);
@@ -726,6 +789,12 @@ cc.Class({
 			var _obsId_left = null; //-----------当前障碍物格子的左侧格子--临时禁止加入临时数组
 			var _obsId_top = null; //------------当前障碍物格子的上侧格子--临时禁止加入临时数组
 			var tempSureList = [];
+
+			var tempEnemyList = [];
+			var _enemId_right = null; //----------当前敌人格子的右侧格子--临时禁止加入临时数组
+			var _enemId_down = null; //-----------当前敌人格子的下侧格子--临时禁止加入临时数组
+			var _enemId_left = null; //-----------当前敌人格子的左侧格子--临时禁止加入临时数组
+			var _enemId_top = null; //------------当前敌人格子的上侧格子--临时禁止加入临时数组
 			console.log(_j6 + "——————————————————————————————————————————————————");
 			for (var _i6 = 0; _i6 < directionList.length; _i6++) {
 				//获取当前循环的父节点格子  
@@ -744,11 +813,28 @@ cc.Class({
 						}
 					}
 				}
+				var enemyList2 = [];
+				for (var z = 0; z < this.hero_list.length; z++) {
+					if (this.hero_list[z].point == checkTarget.bat_hero && this.hero_list[z].groupId == 2) {
+						enemyList2.push(this.hero_list[z]);
+					}
+				}
+				if (enemyList2) {
+					if (_i6 == 0 || _i6 == 2 || _i6 == 4 || _i6 == 6) {
+						_enemId_right = { y: checkTarget.y + directionList[0].y, x: checkTarget.x + directionList[0].x };
+						_enemId_down = { y: checkTarget.y + directionList[2].y, x: checkTarget.x + directionList[2].x };
+						_enemId_left = { y: checkTarget.y + directionList[4].y, x: checkTarget.x + directionList[4].x };
+						_enemId_top = { y: checkTarget.y + directionList[6].y, x: checkTarget.x + directionList[6].x };
+						tempEnemyList.push(_enemId_right, _enemId_down, _enemId_left, _enemId_top);
+					}
+				}
 			}
 			for (var _i7 = 0; _i7 < directionList.length; _i7++) {
 				var _isClose = 0; //-----------------是否已记录在确认数组标识   0：不是   1：是
 				var _isObstacle = 0; //--------------是否障碍物   0：不是   1：是
 				var _isObsEx = 0; //-----------------当前格子是否位于障碍物格子上下左右侧的格子位置上，用于判断是否处于斜格处理   0：不是   1：是
+				var isEnemy = false;
+				var isEnemy2 = 0;
 				var _tempCheckTarget3 = this.batBox.getChildByName("batBox_y" + (parent.y + directionList[_i7].y) + "_x" + (parent.x + directionList[_i7].x));
 				if (_tempCheckTarget3) {
 					//----------是否存在格子
@@ -756,18 +842,27 @@ cc.Class({
 					if (checkTarget.bat_obstacle) {
 						//---------------------当前循环九宫格格子是障碍物
 						_isObstacle = 1;
+					} else if (enemyList2.length != 0) {
+						isEnemy = true;
 					} else {
 						for (var _x2 = 0; _x2 < closeList.length; _x2++) {
 							//------------------当前循环九宫格格子是否已记录在确认数组
 							if (checkTarget.x == closeList[_x2].x && checkTarget.y == closeList[_x2].y) {
-								for (var _o = 0; _o < _obsExList.length; _o++) {
+								for (var _o2 = 0; _o2 < _obsExList.length; _o2++) {
 									//------------------当前循环九宫格格子是否位于障碍物格子上下左右侧的格子位置上，是的话就不能纳入赋值ghf处理
-									if (checkTarget.x == _obsExList[_o].x && checkTarget.y == _obsExList[_o].y) {
+									if (checkTarget.x == _obsExList[_o2].x && checkTarget.y == _obsExList[_o2].y) {
 										_isObsEx = 1;
 										break;
 									}
 								}
-								if (_isObsEx == 0) {
+								for (var _o3 = 0; _o3 < tempEnemyList.length; _o3++) {
+									//------------------当前循环九宫格格子是否位于障碍物格子上下左右侧的格子位置上，是的话就不能纳入赋值ghf处理
+									if (checkTarget.x == tempEnemyList[_o3].x && checkTarget.y == tempEnemyList[_o3].y) {
+										isEnemy2 = 1;
+										break;
+									}
+								}
+								if (_isObsEx == 0 && isEnemy2 == 0) {
 									tempSureList.push(closeList[_x2]);
 								}
 							}
