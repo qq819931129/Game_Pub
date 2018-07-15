@@ -309,11 +309,6 @@
     "meta": 1531039278465,
     "relativePath": "js\\batBox_data"
   },
-  "f3cdca6e-acfa-4db8-a234-94f9629da9f8": {
-    "asset": 1531039278466,
-    "meta": 1531534902544,
-    "relativePath": "js\\batBox_data\\batBox_basic.js"
-  },
   "1ab86e0f-f9ca-4c44-aec6-a85c2e924880": {
     "asset": 1531039278467,
     "meta": 1531534902555,
@@ -3739,9 +3734,14 @@
     "meta": 1531534903065,
     "relativePath": "js\\Types.js"
   },
+  "f3cdca6e-acfa-4db8-a234-94f9629da9f8": {
+    "asset": 1531573793938,
+    "meta": 1531573843248,
+    "relativePath": "js\\batBox_data\\batBox_basic.js"
+  },
   "210fed25-15f2-4438-bf72-45abd19d702e": {
-    "asset": 1531559163833,
-    "meta": 1531559165362,
+    "asset": 1531574613446,
+    "meta": 1531581000471,
     "relativePath": "js\\battle_Control.js"
   }
 }
