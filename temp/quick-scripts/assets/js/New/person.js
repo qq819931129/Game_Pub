@@ -56,11 +56,10 @@ cc.Class({
         this.HPBar = this.getComponent('hpBarHelper');
         this.bodyComp = this.body.getComponent('body');
         this.personComp = this.getComponent('person');
-        this.enemyNode = cc.find('/Canvas/background/enemy');
-        this.Canvas = cc.find('/Canvas'); //获取这个节点的作用是用于坐标转换
+        this.enemyNode = cc.find('/background/enemy');
+        this.background = cc.find('/background'); //获取这个节点的作用是用于坐标转换
         this.bodyComp.init();
         this.bodyComp.playMove();
-        cc.log(this.properties);
 
         //测试远程攻击
         this.atkType = AttackType.Range; //攻击类型
@@ -114,10 +113,8 @@ cc.Class({
             if (this.atkTarget != null) {
                 var flyer = cc.instantiate(this.flyer);
                 flyer.group = this.group;
-                flyer.anchorX = 0;
-                flyer.anchorY = 0;
                 flyer.setPosition(cc.v2(0, 0));
-                flyer.setPosition(this.Canvas.convertToNodeSpace(flyer.getPosition()));
+                // flyer.setPosition(this.Canvas.convertToNodeSpace(flyer.getPosition()));
                 flyer.getComponent('flyerMove').damage = this.atkPoint;
                 flyer.getComponent('flyerMove').targetNode = this.atkTarget;
                 flyer.getComponent('flyerMove').targetDefPosition = this.atkTarget.getPosition();
