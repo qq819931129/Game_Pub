@@ -20,7 +20,8 @@ cc.Class({
     onLoad: function onLoad() {
         //启用碰撞事件
         cc.director.getCollisionManager().enabled = true;
-        //cc.director.getCollisionManager().enabledDebugDraw = true;
+        // cc.director.getCollisionManager().enabledDebugDraw = true;
+        cc.director.getCollisionManager().enabledDrawBoundingBox = true;
         this.moveToPosition(this.targetDefPosition);
     },
     moveToPosition: function moveToPosition(position) {
@@ -32,7 +33,7 @@ cc.Class({
         var middleY = Math.abs(position.y) > Math.abs(thisPosition.y) ? Math.abs(position.y) / 2 : Math.abs(thisPosition.y) / 2;
 
         var bezier = [thisPosition, cc.p(middleX, middleY + (position.x - thisPosition.x) * 0.1), position];
-        cc.log(bezier);
+        // cc.log(bezier);
         var bezierTo = cc.bezierTo(1, bezier);
         this.node.runAction(bezierTo);
     },

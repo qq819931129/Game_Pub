@@ -21,6 +21,9 @@ cc.Class({
         //启用碰撞事件
         cc.director.getCollisionManager().enabled = true;
         //cc.director.getCollisionManager().enabledDebugDraw = true;
+        cc.director.getCollisionManager().enabledDrawBoundingBox = true;
+        this.node.group = this.node.parent.group;
+        cc.log(this.node.group);
     },
     attackOver: function () {
         if (this.parentCopm.atkTarget == null 
@@ -34,13 +37,6 @@ cc.Class({
         }else{
             this.parentCopm.createFlyer();
         }
-        // if(this.parentCopm.atkTargetDist <= this.parentCopm.atkDist){
-           
-        // }
-        // else if(this.parentCopm.atkTargetDist >= this.parentCopm.atkRangedDistMin && this.parentCopm.atkTargetDist <= this.parentCopm.atkRangedDistMax){
-        //     //发射飞行物
-        //     this.parentCopm.createFlyer();
-        // }
     },
     moveOver: function () {
         // cc.log('moveOver');
