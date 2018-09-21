@@ -92,6 +92,7 @@ cc.Class({
 		for (let i = 0; i < bat.length; i++) {
 			this.batlist.push(bat[i].getComponent("batBox_basic"));
 			this.batlist[i].batBoxName = bat[i].name;
+			this.batlist[i].bat_hero = {point:null,groupId:null};
 		}
 		console.log(this.batlist);
         this.perfabPool = this.getComponent("prefabPool");
@@ -121,8 +122,8 @@ cc.Class({
     },
     //生成第三层战场数组-英雄   (关卡id)
     battleInit_hero: function(checkId,personPrefabNew){
-    	// let tempList = [{y: 4,x: 2,point: 6},{y: 3,x: 2,point: 7},{y: 2,x: 2,point: 8},{y: 1,x: 2,point: 9},{y: 0,x: 2,point: 10},{y: 4,x: 1,point: 11}];//----我方阵容-测试用的
-		let tempList = [{y: 4,x: 2,point: 6}];
+    	let tempList = [{y: 4,x: 2,point: 6},{y: 3,x: 2,point: 7},{y: 2,x: 2,point: 8},{y: 1,x: 2,point: 9},{y: 0,x: 2,point: 10},{y: 4,x: 1,point: 11}];//----我方阵容-测试用的
+		//let tempList = [{y: 4,x: 2,point: 6}];
 		let otherList = [];//-----------------------我方阵容
     	let otherList_lock_id = 0;//----------------我方阵容——位置是否有重复英雄导入标识  0:是，1:不是
     	let otherList_lock_point = 0;//-------------我方阵容——不同年龄系列英雄是否重复导入标识  0:是，1:不是
@@ -130,7 +131,7 @@ cc.Class({
     	//let fulinList = [{id: "01",point: 1},{id: "02",point: 2},{id: "03",point: 3}];//------符灵技能栏
     	if (checkId == 1) {
 			//var enemyList = [{y: 4,x: 9,point: 1},{y: 2,x: 9,point: 2},{y: 0,x: 9,point: 3},{y: 3,x: 7,point: 4},{y: 1,x: 7,point: 5}];//----敌方阵容
-			var enemyList = [{y: 3,x: 5,point: 1}];
+			var enemyList = [{y: 3,x: 8,point: 1}];
     	}
     	if (checkId == 2) {
     		var enemyList = [{y: 3,x: 9,point: 1},{y: 1,x: 9,point: 2},{y: 0,x: 9,point: 3},{y: 0,x: 7,point: 4},{y: 1,x: 7,point: 5}];//----敌方阵容
@@ -168,7 +169,11 @@ cc.Class({
     	for (let i = 0; i < otherList.length; i++) {//-----我方英雄导入战场
     		for (let j = 0; j < this.batlist.length; j++) {//--------战场需要遍历50次，所以用batlist，而不用专门获取的batBox.getChildByName
 	        	if (this.batlist[j].x == otherList[i].x && this.batlist[j].y == otherList[i].y) {
-	        		this.batlist[j].bat_hero = otherList[i].point;
+	        		this.batlist[j].bat_hero = {
+	        			point: otherList[i].point,
+	        			groupId: 1
+	        		}
+	        		this.batBox.getChildByName("batBox_y" + this.batlist[j].y + "_x" + this.batlist[j].x).bat_hero = this.batlist[j].bat_hero;
 	        		this.battleInit_hero_detail(otherList[i].point,this.batlist[j],1,personPrefabNew);
 	        	}
     		}
@@ -176,11 +181,17 @@ cc.Class({
     	for (let i = 0; i < enemyList.length; i++) {//-----敌方英雄导入战场
     		for (let j = 0; j < this.batlist.length; j++) {//--------战场需要遍历50次，所以用batlist，而不用专门获取的batBox.getChildByName
 	        	if (this.batlist[j].x == enemyList[i].x && this.batlist[j].y == enemyList[i].y) {
-	        		this.batlist[j].bat_hero = enemyList[i].point;
+	        		this.batlist[j].bat_hero = {
+	        			point: enemyList[i].point,
+	        			groupId: 2
+	        		}
+	        		this.batBox.getChildByName("batBox_y" + this.batlist[j].y + "_x" + this.batlist[j].x).bat_hero = this.batlist[j].bat_hero;
 	        		this.battleInit_hero_detail(enemyList[i].point,this.batlist[j],2,personPrefabNew);
 	        	}
     		}
     	}
+    	console.log(this.batlist);
+    	
     	js_dataControl.updateHeroList(this.hero_list);
 		var heroRouteOkList = this.hero_route_ok_list;
     	this.background.getChildByName("stopAllMove").on(cc.Node.EventType.TOUCH_START, function ( event ) {
@@ -361,7 +372,7 @@ cc.Class({
 					}
 					var enemyList2 = [];
 	    			for (var z = 0; z < self.hero_list.length; z++) {
-	    				if(self.hero_list[z].point == boxItem.bat_hero && self.hero_list[z].groupId == 2){
+	    				if(self.hero_list[z].point == boxItem.bat_hero.point && self.hero_list[z].groupId == 2){
 	    					enemyList2.push(self.hero_list[z]);
 	    				}
 	    			}
@@ -426,12 +437,16 @@ cc.Class({
 					heroList[j].x = targetBoxItem.getComponent("batBox_basic").x;//----------------------------------------英雄当前x轴修改
 					heroList[j].y = targetBoxItem.getComponent("batBox_basic").y;//----------------------------------------英雄当前y轴修改
 					js_dataControl.updateHeroList(heroList);//----------------更新存储数据层js的英雄详细数组
+					if (heroList[j].route[heroList[j].indexNum-1]) {//清除当前移动对象上一步格子里的标识
+						self.batBox.getChildByName("batBox_y" + heroList[j].route[heroList[j].indexNum-1].y + "_x" + heroList[j].route[heroList[j].indexNum-1].x).bat_hero.point = "";
+					}
+					console.log(self.batBox.getChildByName("batBox_y" + heroList[j].route[heroList[j].indexNum].y + "_x" + heroList[j].route[heroList[j].indexNum].x));
+					
+					self.batBox.getChildByName("batBox_y" + heroList[j].route[heroList[j].indexNum].y + "_x" + heroList[j].route[heroList[j].indexNum].x).bat_hero.point = heroList[j].point;//------更改第一层战场格子上的英雄标记
 					//英雄路线移动完毕后执行以下方法
 					if ((heroList[j].indexNum+1) == heroList[j].route.length) {
-						self.batBox.getChildByName("batBox_y" + heroList[j].route[heroList[j].indexNum].y + "_x" + heroList[j].route[heroList[j].indexNum].x).bat_hero = heroList[j].point;//------------------------更改第一层战场格子上的英雄标记
 						heroList[j].state = 10;
-					}else{
-						self.batBox.getChildByName("batBox_y" + heroList[j].route[heroList[j].indexNum].y + "_x" + heroList[j].route[heroList[j].indexNum].x).bat_hero = heroList[j].point;//------------------------更改第一层战场格子上的英雄标记
+						console.log(self.batBox);
 					}
 					heroList[j].indexNum++;
 				}
@@ -574,7 +589,7 @@ cc.Class({
 	    			}
 	    			var enemyList2 = [];
 	    			for (var z = 0; z < this.hero_list.length; z++) {
-	    				if(this.hero_list[z].point == checkTarget.bat_hero && this.hero_list[z].groupId == 2){
+	    				if(this.hero_list[z].point == checkTarget.bat_hero.point && this.hero_list[z].groupId == 2){
 	    					enemyList2.push(this.hero_list[z]);
 	    				}
 	    			}
@@ -602,7 +617,7 @@ cc.Class({
 					var checkTarget = tempCheckTarget.getComponent("batBox_basic");
 					var enemyList2 = [];
 	    			for (var z = 0; z < this.hero_list.length; z++) {
-	    				if(this.hero_list[z].point == checkTarget.bat_hero && this.hero_list[z].groupId == 2){
+	    				if(this.hero_list[z].point == checkTarget.bat_hero.point && this.hero_list[z].groupId == 2){
 	    					enemyList2.push(this.hero_list[z]);
 	    				}
 	    			}
@@ -728,7 +743,7 @@ cc.Class({
 	    		}
     			var enemyList2 = [];
     			for (var z = 0; z < this.hero_list.length; z++) {
-    				if(this.hero_list[z].point == checkTarget.bat_hero && this.hero_list[z].groupId == 2){
+    				if(this.hero_list[z].point == checkTarget.bat_hero.point && this.hero_list[z].groupId == 2){
     					enemyList2.push(this.hero_list[z]);
     				}
     			}
