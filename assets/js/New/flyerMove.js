@@ -14,7 +14,8 @@ cc.Class({
     onLoad: function () {
         //启用碰撞事件
         cc.director.getCollisionManager().enabled = true;
-        //cc.director.getCollisionManager().enabledDebugDraw = true;
+        // cc.director.getCollisionManager().enabledDebugDraw = true;
+        cc.director.getCollisionManager().enabledDrawBoundingBox = true;
         this.moveToPosition(this.targetDefPosition);
     },
     moveToPosition:function(position){
@@ -30,7 +31,11 @@ cc.Class({
         var bezier = [thisPosition,
             cc.p(middleX, middleY+((position.x-thisPosition.x)*0.1)),
             position];
+<<<<<<< HEAD
         //cc.log(bezier);
+=======
+        // cc.log(bezier);
+>>>>>>> 51e040bde0d643ce8407b6fd692740f2e5685a8a
         var bezierTo = cc.bezierTo(1, bezier);
         this.node.runAction(bezierTo);
     },
