@@ -84,7 +84,7 @@ cc.Class({
                 this.atkTarget = null;
                 this.bodyComp.playMove();
             }else{
-                cc.log(this.atkTarget.name);
+                //cc.log(this.atkTarget.name);
             }
 
             // var dist = this.findAtkTarget.getTargetDistance(this.node.getPosition(), this.atkTarget);

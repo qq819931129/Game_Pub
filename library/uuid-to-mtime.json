@@ -345,7 +345,7 @@
     "relativePath": "js\\hero_data\\hero_basic.js"
   },
   "73b4e36c-a61b-4b6a-8f45-e20a66cb4ae3": {
-    "asset": 1531039278464,
+    "asset": 1531649952086,
     "meta": 1531039278460,
     "relativePath": "js\\New"
   },
@@ -3710,8 +3710,8 @@
     "relativePath": "prefab\\webview.prefab"
   },
   "b0484c7d-791d-485f-bded-c24dde349774": {
-    "asset": 1531039278425,
-    "meta": 1531534901898,
+    "asset": 1531649952084,
+    "meta": 1531650021981,
     "relativePath": "battleBuild.fire"
   },
   "113e344f-026f-4af4-95fc-69a8499577ed": {
@@ -3719,29 +3719,29 @@
     "meta": 1531534902958,
     "relativePath": "js\\New\\body.js"
   },
-  "5bb65800-917f-4355-b645-9eea1c898d2a": {
-    "asset": 1531039278463,
-    "meta": 1531534902976,
-    "relativePath": "js\\New\\flyerMove.js"
-  },
-  "29fb5e54-d47c-4b4f-8dc3-baca5c6f728f": {
-    "asset": 1531039278464,
-    "meta": 1531534903019,
-    "relativePath": "js\\New\\person.js"
-  },
   "ba526662-f165-49bb-8bb8-99e95b9eef17": {
     "asset": 1531039278465,
     "meta": 1531534903065,
     "relativePath": "js\\Types.js"
   },
   "f3cdca6e-acfa-4db8-a234-94f9629da9f8": {
-    "asset": 1531573793938,
-    "meta": 1531573843248,
+    "asset": 1531660803649,
+    "meta": 1531665371021,
     "relativePath": "js\\batBox_data\\batBox_basic.js"
   },
+  "5bb65800-917f-4355-b645-9eea1c898d2a": {
+    "asset": 1536979029995,
+    "meta": 1536979034938,
+    "relativePath": "js\\New\\flyerMove.js"
+  },
+  "29fb5e54-d47c-4b4f-8dc3-baca5c6f728f": {
+    "asset": 1536979024507,
+    "meta": 1536979034939,
+    "relativePath": "js\\New\\person.js"
+  },
   "210fed25-15f2-4438-bf72-45abd19d702e": {
-    "asset": 1531574613446,
-    "meta": 1531581000471,
+    "asset": 1536990694662,
+    "meta": 1536990696879,
     "relativePath": "js\\battle_Control.js"
   }
 }

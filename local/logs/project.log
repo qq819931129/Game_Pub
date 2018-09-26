@@ -1,55 +1,54 @@
-2018-07-15T10:17:30.351Z - normal: Load ~/.CocosCreator/settings.json
-2018-07-15T10:17:30.355Z - normal: checking language setting...
-2018-07-15T10:17:30.355Z - normal: Language: zh
-2018-07-15T10:17:32.591Z - success: protocol editor-framework registered
-2018-07-15T10:17:32.591Z - success: protocol app registered
-2018-07-15T10:17:32.591Z - success: protocol theme registered
-2018-07-15T10:17:32.591Z - success: protocol packages registered
-2018-07-15T10:17:32.591Z - success: protocol unpack registerred
-2018-07-15T10:17:32.591Z - success: protocol disable-commonjs registerred
-2018-07-15T10:17:32.786Z - normal: connected!
-2018-07-15T10:17:32.789Z - normal: Check project F:\sanguoGame\sanguoPro
-2018-07-15T10:17:32.792Z - normal: Initializing Cocos2d
-2018-07-15T10:17:33.245Z - normal: Initializing Asset Database
-2018-07-15T10:17:33.298Z - success: protocol uuid registerred
-2018-07-15T10:17:33.298Z - success: protocol db registerred
-2018-07-15T10:17:33.299Z - success: protocol thumbnail registerred
-2018-07-15T10:17:33.299Z - normal: Loading editor/builtin packages
-2018-07-15T10:17:33.381Z - success: anysdk loaded
-2018-07-15T10:17:33.500Z - success: assets loaded
-2018-07-15T10:17:33.502Z - success: builder loaded
-2018-07-15T10:17:33.503Z - success: cocos-analytics loaded
-2018-07-15T10:17:33.505Z - success: console loaded
-2018-07-15T10:17:33.534Z - success: fb-instant-games loaded
-2018-07-15T10:17:33.537Z - success: hierarchy loaded
-2018-07-15T10:17:33.539Z - success: inspector loaded
-2018-07-15T10:17:33.541Z - success: keystore loaded
-2018-07-15T10:17:33.543Z - success: node-library loaded
-2018-07-15T10:17:33.545Z - success: package-asset loaded
-2018-07-15T10:17:33.548Z - success: preferences loaded
-2018-07-15T10:17:33.548Z - success: project-exporter loaded
-2018-07-15T10:17:33.564Z - success: project-importer loaded
-2018-07-15T10:17:33.566Z - success: project-settings loaded
-2018-07-15T10:17:33.567Z - success: ui-kit loaded
-2018-07-15T10:17:33.574Z - success: ui-grid loaded
-2018-07-15T10:17:33.576Z - success: scene loaded
-2018-07-15T10:17:33.577Z - success: sprite-editor loaded
-2018-07-15T10:17:33.580Z - success: store loaded
-2018-07-15T10:17:33.584Z - success: timeline loaded
-2018-07-15T10:17:33.584Z - normal: Loading builtin packages
-2018-07-15T10:17:33.590Z - success: asset-db-debugger loaded
-2018-07-15T10:17:33.592Z - success: code-editor loaded
-2018-07-15T10:17:33.599Z - success: color-picker loaded
-2018-07-15T10:17:33.600Z - success: package-manager loaded
-2018-07-15T10:17:33.610Z - success: sdkbox loaded
-2018-07-15T10:17:33.612Z - success: tester loaded
-2018-07-15T10:17:33.613Z - success: ui-kit-preview-extra loaded
-2018-07-15T10:17:33.614Z - success: ui-kit-preview loaded
-2018-07-15T10:17:33.615Z - success: ui-tree loaded
-2018-07-15T10:17:34.879Z - normal: Initializing project F:\sanguoGame\sanguoPro
-2018-07-15T10:17:34.891Z - normal: Loading packages
-2018-07-15T10:17:34.894Z - normal: Watching packages
-2018-07-15T10:17:34.908Z - normal: Run Application
-2018-07-15T10:17:36.972Z - success: preview server running at http://localhost:7456
-2018-07-15T10:17:41.287Z - normal: 1.9.0
-2018-07-15T10:18:12.413Z - info: shutdown preview server
+2018-09-17T01:13:36.660Z - normal: Load ~/.CocosCreator/settings.json
+2018-09-17T01:13:36.663Z - normal: checking language setting...
+2018-09-17T01:13:36.663Z - normal: Language: zh
+2018-09-17T01:13:41.746Z - success: protocol editor-framework registered
+2018-09-17T01:13:41.746Z - success: protocol app registered
+2018-09-17T01:13:41.746Z - success: protocol theme registered
+2018-09-17T01:13:41.746Z - success: protocol packages registered
+2018-09-17T01:13:41.746Z - success: protocol unpack registerred
+2018-09-17T01:13:41.746Z - success: protocol disable-commonjs registerred
+2018-09-17T01:13:41.960Z - normal: connected!
+2018-09-17T01:13:41.962Z - normal: Check project F:\sanguoGame\sanguoPro
+2018-09-17T01:13:41.964Z - normal: Initializing Cocos2d
+2018-09-17T01:13:42.402Z - normal: Initializing Asset Database
+2018-09-17T01:13:42.476Z - success: protocol uuid registerred
+2018-09-17T01:13:42.476Z - success: protocol db registerred
+2018-09-17T01:13:42.476Z - success: protocol thumbnail registerred
+2018-09-17T01:13:42.476Z - normal: Loading editor/builtin packages
+2018-09-17T01:13:42.574Z - success: anysdk loaded
+2018-09-17T01:13:42.724Z - success: assets loaded
+2018-09-17T01:13:42.726Z - success: builder loaded
+2018-09-17T01:13:42.728Z - success: cocos-analytics loaded
+2018-09-17T01:13:42.730Z - success: console loaded
+2018-09-17T01:13:42.761Z - success: fb-instant-games loaded
+2018-09-17T01:13:42.763Z - success: hierarchy loaded
+2018-09-17T01:13:42.765Z - success: inspector loaded
+2018-09-17T01:13:42.771Z - success: keystore loaded
+2018-09-17T01:13:42.773Z - success: node-library loaded
+2018-09-17T01:13:42.778Z - success: package-asset loaded
+2018-09-17T01:13:42.779Z - success: preferences loaded
+2018-09-17T01:13:42.780Z - success: project-exporter loaded
+2018-09-17T01:13:42.792Z - success: project-importer loaded
+2018-09-17T01:13:42.793Z - success: project-settings loaded
+2018-09-17T01:13:42.794Z - success: ui-kit loaded
+2018-09-17T01:13:42.798Z - success: ui-grid loaded
+2018-09-17T01:13:42.800Z - success: scene loaded
+2018-09-17T01:13:42.801Z - success: sprite-editor loaded
+2018-09-17T01:13:42.803Z - success: store loaded
+2018-09-17T01:13:42.806Z - success: timeline loaded
+2018-09-17T01:13:42.807Z - normal: Loading builtin packages
+2018-09-17T01:13:42.823Z - success: asset-db-debugger loaded
+2018-09-17T01:13:42.824Z - success: code-editor loaded
+2018-09-17T01:13:42.831Z - success: color-picker loaded
+2018-09-17T01:13:42.832Z - success: package-manager loaded
+2018-09-17T01:13:42.839Z - success: sdkbox loaded
+2018-09-17T01:13:42.841Z - success: tester loaded
+2018-09-17T01:13:42.842Z - success: ui-kit-preview-extra loaded
+2018-09-17T01:13:42.843Z - success: ui-kit-preview loaded
+2018-09-17T01:13:42.844Z - success: ui-tree loaded
+2018-09-17T01:13:43.963Z - normal: Initializing project F:\sanguoGame\sanguoPro
+2018-09-17T01:13:43.984Z - normal: Loading packages
+2018-09-17T01:13:43.989Z - normal: Watching packages
+2018-09-17T01:13:44.009Z - normal: Run Application
+2018-09-17T01:13:46.048Z - success: preview server running at http://localhost:7456
+2018-09-17T01:13:50.802Z - normal: 1.9.0

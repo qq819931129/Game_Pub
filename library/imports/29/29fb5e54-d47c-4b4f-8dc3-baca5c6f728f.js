@@ -91,9 +91,9 @@ cc.Class({
                 cc.log('清空攻击目标');
                 this.atkTarget = null;
                 this.bodyComp.playMove();
-            } else {
-                cc.log(this.atkTarget.name);
-            }
+            } else {}
+            //cc.log(this.atkTarget.name);
+
 
             // var dist = this.findAtkTarget.getTargetDistance(this.node.getPosition(), this.atkTarget);
             // this.atkTargetDist = dist;
