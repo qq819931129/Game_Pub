@@ -67,7 +67,7 @@ cc.Class({
     //生成第一层战场数组-基础数据  (关卡id，预存资源对象)
     battleInit_basic: function(checkId,personPrefabNew) {
 		//初始化部分数组
-    	this.batlist = [];//-----------------------------战场基础层
+    	this.batlist = this.batBox.children;//-----------战场基础层  需要批量处理基础层格子数据时候用
     	this.hero_list = [];//---------------------------战场英雄存储
     	this.obstacle_list = [];//-----------------------战场障碍物存储
     	this.hero_route_list = [];//---------------------英雄路线数据
@@ -88,11 +88,15 @@ cc.Class({
     	this.indexNum = 0;
     	
     	this.checkId = js_dataControl.getcheckId();//-------获取关卡id
-		var bat = this.batBox.children;
-		for (let i = 0; i < bat.length; i++) {
-			this.batlist.push(bat[i].getComponent("batBox_basic"));
+		//var bat = this.batBox.children;
+		for (let i = 0; i < this.batlist.length; i++) {
+			var batItem = this.batlist[i].getComponent("batBox_basic");
+			/*this.batlist.push(bat[i].getComponent("batBox_basic"));
 			this.batlist[i].batBoxName = bat[i].name;
-			this.batlist[i].bat_hero = {point:null,groupId:null};
+			this.batlist[i].bat_hero = {point:null,groupId:null};*/
+			
+			batItem.batBoxName = this.batlist[i].name;
+			batItem.bat_hero = {point:null,groupId:null};
 		}
 		console.log(this.batlist);
         this.perfabPool = this.getComponent("prefabPool");
@@ -110,9 +114,10 @@ cc.Class({
     	}
     	for (let i = 0; i < otherList.length; i++) {//-----匹配战场数组
     		for (let j = 0; j < this.batlist.length; j++) {//--------战场需要遍历50次，所以用batlist，而不用专门获取的batBox.getChildByName
-	        	if (this.batlist[j].x == otherList[i].x && this.batlist[j].y == otherList[i].y) {
-	        		this.batlist[j].bat_obstacle = otherList[i].point;
-	        		this.battleInit_obstacle_detail(otherList[i].point,this.batlist[j]);
+    			var batItem = this.batlist[j].getComponent("batBox_basic");
+	        	if (batItem.x == otherList[i].x && batItem.y == otherList[i].y) {
+	        		batItem.bat_obstacle = otherList[i].point;
+	        		this.battleInit_obstacle_detail(otherList[i].point,batItem);
 	        	}
     		}
     	}
@@ -168,29 +173,31 @@ cc.Class({
 		
     	for (let i = 0; i < otherList.length; i++) {//-----我方英雄导入战场
     		for (let j = 0; j < this.batlist.length; j++) {//--------战场需要遍历50次，所以用batlist，而不用专门获取的batBox.getChildByName
-	        	if (this.batlist[j].x == otherList[i].x && this.batlist[j].y == otherList[i].y) {
-	        		this.batlist[j].bat_hero = {
+    			var batItem = this.batlist[j].getComponent("batBox_basic");
+	        	if (batItem.x == otherList[i].x && batItem.y == otherList[i].y) {
+	        		batItem.bat_hero = {
 	        			point: otherList[i].point,
 	        			groupId: 1
 	        		}
-	        		this.batBox.getChildByName("batBox_y" + this.batlist[j].y + "_x" + this.batlist[j].x).bat_hero = this.batlist[j].bat_hero;
-	        		this.battleInit_hero_detail(otherList[i].point,this.batlist[j],1,personPrefabNew);
+	        		//this.batBox.getChildByName("batBox_y" + batItem.y + "_x" + batItem.x).bat_hero = batItem.bat_hero;
+	        		this.battleInit_hero_detail(otherList[i].point,batItem,1,personPrefabNew);
 	        	}
     		}
     	}
     	for (let i = 0; i < enemyList.length; i++) {//-----敌方英雄导入战场
     		for (let j = 0; j < this.batlist.length; j++) {//--------战场需要遍历50次，所以用batlist，而不用专门获取的batBox.getChildByName
-	        	if (this.batlist[j].x == enemyList[i].x && this.batlist[j].y == enemyList[i].y) {
-	        		this.batlist[j].bat_hero = {
+    			var batItem = this.batlist[j].getComponent("batBox_basic");
+	        	if (batItem.x == enemyList[i].x && batItem.y == enemyList[i].y) {
+	        		batItem.bat_hero = {
 	        			point: enemyList[i].point,
 	        			groupId: 2
 	        		}
-	        		this.batBox.getChildByName("batBox_y" + this.batlist[j].y + "_x" + this.batlist[j].x).bat_hero = this.batlist[j].bat_hero;
-	        		this.battleInit_hero_detail(enemyList[i].point,this.batlist[j],2,personPrefabNew);
+	        		//this.batBox.getChildByName("batBox_y" + batItem.y + "_x" + batItem.x).bat_hero = batItem.bat_hero;
+	        		this.battleInit_hero_detail(enemyList[i].point,batItem,2,personPrefabNew);
 	        	}
     		}
     	}
-    	console.log(this.batlist);
+    	//console.log(this.batlist,this.batBox.getChildByName("batBox_y" + 0 + "_x" + 2).getComponent("batBox_basic"));
     	
     	js_dataControl.updateHeroList(this.hero_list);
 		var heroRouteOkList = this.hero_route_ok_list;
@@ -242,7 +249,8 @@ cc.Class({
     //选取格子高亮   (格子对象)
     currentBox: function(boxItem){
     	var temp = this.batBox.getChildByName("batBox_y" + boxItem.y + "_x" + boxItem.x);
-    	//console.log(temp.getComponent("batBox_basic").box_current,temp.getComponent("batBox_basic"));
+    	
+    	console.log(temp.getComponent("batBox_basic").box_current,temp.getComponent("batBox_basic"));
     	if(temp.getComponent("batBox_basic").box_current == 0){//------------------------------防止重复加载同一个格子高亮导致出现异常bug情况
 			temp.getComponent("batBox_basic").box_current = 1;//-------------------------------高亮选择到的格子
 	    	let item = cc.instantiate(this.icon_arrow); 
@@ -340,6 +348,7 @@ cc.Class({
 				self.background.addChild(tempColl_touch);
 				tempColl_touch.setPosition(self_x,self_y);
 				self.background.getChildByName("tempColl_touch").getComponent("colliderListener").boxItem = null;//---初始化碰撞点上的格子对象
+				
 		    	/*if (heroRouteOkList.list.length != 0) {
 					let heroList = self.hero_list;
 					for (let j = 0; j < heroList.length; j++) {//---------匹配英雄表
@@ -364,6 +373,7 @@ cc.Class({
 				let isCenter = 0;
 				var boxItem = self.background.getChildByName("tempColl_touch").getComponent("colliderListener").boxItem;
 				if (boxItem) {
+					//console.log(111);
 					if (boxItem.name == "batBox_Center") {
 						boxItem = boxItem.parent.getComponent("batBox_basic");
 						isCenter = 1;
@@ -372,21 +382,28 @@ cc.Class({
 					}
 					var enemyList2 = [];
 	    			for (var z = 0; z < self.hero_list.length; z++) {
-	    				if(self.hero_list[z].point == boxItem.bat_hero.point && self.hero_list[z].groupId == 2){
+	    				//console.log(self.hero_list[z].point,boxItem.bat_hero.point);
+	    				if(self.hero_list[z].point == boxItem.bat_hero.point && self.hero_list[z].groupId == 2){//获取当前格子上是否有敌人
 	    					enemyList2.push(self.hero_list[z]);
 	    				}
 	    			}
 	    			
+	    			//console.log(enemyList2);
 					if (!boxItem.bat_obstacle && enemyList2.length == 0) {
+						//console.log(boxItem.batBoxName,heroRouteOkList.lastId);
 						if (heroRouteOkList.lastId == -1) {//--------------------------------还没记录到上一次的格子名字，证明是在获取第一次路线信息
+							//console.log(666);
 							for (let i = 0; i < self.hero_list.length; i++) {//------------循环英雄数组
 								if (self.hero_list[i].heroName == selfItem.name) {//----------匹配当前点击的格子上是否存在英雄
+									//console.log(333);
 									self.matchOKHeroRoute(selfItem.name,boxItem);//-------传参英雄名和格子对象给确认数组
 								}
 							}
 						}else{
 							if (isCenter == 1) {
+								//console.log(444);
 								if(heroRouteOkList.lastId != boxItem.batBoxName){//----------当前触碰的格子不是上一次记录的格子（此判断为了防止不断触碰相同格子一直执行以下方法）
+									//console.log(555);
 									self.matchOKHeroRoute(heroRouteOkList.name,boxItem);//-------传参英雄名和格子对象给确认数组
 								}
 							}
@@ -438,15 +455,17 @@ cc.Class({
 					heroList[j].y = targetBoxItem.getComponent("batBox_basic").y;//----------------------------------------英雄当前y轴修改
 					js_dataControl.updateHeroList(heroList);//----------------更新存储数据层js的英雄详细数组
 					if (heroList[j].route[heroList[j].indexNum-1]) {//清除当前移动对象上一步格子里的标识
-						self.batBox.getChildByName("batBox_y" + heroList[j].route[heroList[j].indexNum-1].y + "_x" + heroList[j].route[heroList[j].indexNum-1].x).bat_hero.point = "";
+						console.log(self.batBox.getChildByName("batBox_y" + heroList[j].route[heroList[j].indexNum-1].y + "_x" + heroList[j].route[heroList[j].indexNum-1].x).getComponent("batBox_basic").bat_hero);
+						self.batBox.getChildByName("batBox_y" + heroList[j].route[heroList[j].indexNum-1].y + "_x" + heroList[j].route[heroList[j].indexNum-1].x).getComponent("batBox_basic").bat_hero.point = "";
 					}
-					console.log(self.batBox.getChildByName("batBox_y" + heroList[j].route[heroList[j].indexNum].y + "_x" + heroList[j].route[heroList[j].indexNum].x));
+					console.log(self.batBox.getChildByName("batBox_y" + heroList[j].route[heroList[j].indexNum].y + "_x" + heroList[j].route[heroList[j].indexNum].x).getComponent("batBox_basic"));
 					
-					self.batBox.getChildByName("batBox_y" + heroList[j].route[heroList[j].indexNum].y + "_x" + heroList[j].route[heroList[j].indexNum].x).bat_hero.point = heroList[j].point;//------更改第一层战场格子上的英雄标记
+					self.batBox.getChildByName("batBox_y" + heroList[j].route[heroList[j].indexNum].y + "_x" + heroList[j].route[heroList[j].indexNum].x).getComponent("batBox_basic").bat_hero.point = heroList[j].point;//------更改第一层战场格子上的英雄标记
 					//英雄路线移动完毕后执行以下方法
 					if ((heroList[j].indexNum+1) == heroList[j].route.length) {
 						heroList[j].state = 10;
 						console.log(self.batBox);
+						
 					}
 					heroList[j].indexNum++;
 				}
@@ -544,7 +563,7 @@ cc.Class({
     },
     //A*算法   (原点目标，终点目标)
     routeDirection: function(startTarget,endTarget){
-    	if (startTarget.x == endTarget.x && startTarget.y == endTarget.y || endTarget.bat_obstacle) { return false; }//---------------如果起点和终点一样就退出方法
+    	if (startTarget.x == endTarget.x && startTarget.y == endTarget.y || endTarget.bat_obstacle || endTarget.bat_hero.groupId == 2) { return false; }//---------------如果起点和终点一样就退出方法
     	let openList = [];//---------------九宫格临时存放格子数组
     	let closeList = [];//--------------九宫格临时存放确认数组
     	let sureList = [];//---------------九宫格最终确认数组
