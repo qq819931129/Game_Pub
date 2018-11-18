@@ -6,6 +6,7 @@ cc._RF.push(module, '210fe0lFfJEOL9yRavRnXAu', 'battle_Control', __filename);
 
 //导入外部脚本
 var js_dataControl = require("dataControl");
+var js_algorithm_A = require("algorithm_A");
 var GroupName = require('Types').GroupName;
 cc.Class({
 	extends: cc.Component,
@@ -110,7 +111,7 @@ cc.Class({
 	battleInit_obstacle: function battleInit_obstacle(checkId, personPrefabNew) {
 		//关卡序列
 		if (checkId == 1) {
-			var otherList = [{ y: 0, x: 4, point: 1 }, { y: 2, x: 4, point: 2 }, { y: 1, x: 4, point: 3 }, { y: 1, x: 6, point: 1 }, { y: 2, x: 7, point: 1 }];
+			var otherList = [{ y: 0, x: 4, point: 1 }, { y: 2, x: 4, point: 2 }, { y: 1, x: 4, point: 3 }, { y: 1, x: 6, point: 1 }, { y: 2, x: 8, point: 1 }];
 		}
 		if (checkId == 2) {
 			var otherList = [{ y: 0, x: 4, point: 1 }, { y: 2, x: 4, point: 2 }, { y: 1, x: 4, point: 3 }];
@@ -229,14 +230,22 @@ cc.Class({
 			var heroList = self.hero_list;
 			for (var _j4 = 0; _j4 < heroList.length; _j4++) {
 				//---------匹配英雄表
-				if (heroList[_j4].groupId == 1) {
-					//if (heroList[j].heroName == "hero_6") {
-					var checkRoute = self.routeDirection(heroList[_j4], self.getNearEnemy(heroList[_j4], heroList));
+				//if (heroList[j].groupId == 1) {
+				if (heroList[_j4].heroName == "hero_1") {
+					//js_algorithm_A.getNearEnemy({target:heroList[j],dataList:heroList,batBox:self.batBox})
+					var checkRoute = js_algorithm_A.routeDirection({
+						startTarget: heroList[_j4],
+						endTarget: self.batBox.getChildByName("batBox_y" + 3 + "_x" + 7).getComponent("batBox_basic"),
+						batBox: self.batBox,
+						hero_list: self.hero_list,
+						heroItem: heroList[_j4]
+					});
+					console.log(checkRoute);
 					heroList[_j4].route = checkRoute;
 					heroList[_j4].state = 11;
 					heroList[_j4].indexNum = 0;
 					//self.matchOKHeroRoute(heroList[j].name,self.getNearEnemy(heroList[j],heroList));//-------传参英雄名和格子对象给确认数组
-					console.log(heroList[_j4], checkRoute, self.getNearEnemy(heroList[_j4], heroList));
+					//console.log(heroList[j],checkRoute,self.getNearEnemy(heroList[j],heroList));
 				}
 			}
 		});
@@ -260,8 +269,6 @@ cc.Class({
 	//选取格子高亮   (格子对象)
 	currentBox: function currentBox(boxItem) {
 		var temp = this.batBox.getChildByName("batBox_y" + boxItem.y + "_x" + boxItem.x);
-
-		console.log(temp.getComponent("batBox_basic").box_current, temp.getComponent("batBox_basic"));
 		if (temp.getComponent("batBox_basic").box_current == 0) {
 			//------------------------------防止重复加载同一个格子高亮导致出现异常bug情况
 			temp.getComponent("batBox_basic").box_current = 1; //-------------------------------高亮选择到的格子
@@ -348,32 +355,39 @@ cc.Class({
 		item.name = "hero_" + point;
 		if (groupId == 1) {
 			var hero_basic = this.other.getChildByName(item.name).getComponent("person");
-			hero_basic.groupId = groupId;
-			hero_basic.heroName = item.name;
-			hero_basic.x = box.x;
-			hero_basic.y = box.y;
-			hero_basic.point = point;
 		}
 		if (groupId == 2) {
 			var hero_basic = this.enemy.getChildByName(item.name).getComponent("person");
-			hero_basic.groupId = groupId;
-			hero_basic.heroName = item.name;
-			hero_basic.x = box.x;
-			hero_basic.y = box.y;
-			hero_basic.point = point;
 		}
-		var itemList = {
-			groupId: groupId, //英雄敌我阵容标识
-			heroName: item.name, //英雄预存资源生成名称
-			x: box.x, //英雄当前所处x轴
-			y: box.y, //英雄当前所处y轴
-			point: point, //英雄标记  纪录具体是哪个英雄
-			indexNum: 0, //英雄移动路线的当前到达位置，就是说数组里的第几个位置
-			route: [], //英雄移动路线   状态切换为移动时，赋值路线
-			state: 10, //英雄状态   10：待命，11：移动
-			isDie: 1 //死亡标识   0：死亡，1:未死亡
-		};
-		this.hero_list.push(itemList);
+		hero_basic.groupId = groupId;
+		hero_basic.heroName = item.name;
+		hero_basic.x = box.x;
+		hero_basic.y = box.y;
+		hero_basic.point = point;
+		hero_basic.groupId = groupId, //英雄敌我阵容标识
+		hero_basic.heroName = item.name, //英雄预存资源生成名称
+		hero_basic.x = box.x, //英雄当前所处x轴
+		hero_basic.y = box.y, //英雄当前所处y轴
+		hero_basic.point = point, //英雄标记  纪录具体是哪个英雄
+		hero_basic.indexNum = 0, //英雄移动路线的当前到达位置，就是说数组里的第几个位置
+		hero_basic.route = [], //英雄移动路线   状态切换为移动时，赋值路线
+		hero_basic.lockTarget = null, //英雄移动路线里锁定的最终目标物体
+		hero_basic.state = 10, //英雄状态   10：待命，11：移动
+		hero_basic.isDie = 1; //死亡标识   0：死亡，1:未死亡
+
+		/*let itemList = {
+  	groupId : groupId,				//英雄敌我阵容标识
+  	heroName: item.name,			//英雄预存资源生成名称
+  	x		: box.x,				//英雄当前所处x轴
+  	y		: box.y,				//英雄当前所处y轴
+  	point	: point,				//英雄标记  纪录具体是哪个英雄
+  	indexNum: 0,					//英雄移动路线的当前到达位置，就是说数组里的第几个位置
+  	route	: [],					//英雄移动路线   状态切换为移动时，赋值路线
+  	lockTarget: null,					//英雄移动路线里锁定的最终目标物体
+  state	: 10,					//英雄状态   10：待命，11：移动
+  isDie   : 1						//死亡标识   0：死亡，1:未死亡
+  }*/
+		this.hero_list.push(hero_basic);
 		var self = this;
 		var heroRouteOkList = this.hero_route_ok_list;
 		var lastRouteTarget = null; //-------------------用作碰触到障碍物后保留前一个格子对象
@@ -431,9 +445,10 @@ cc.Class({
 							enemyList2.push(self.hero_list[z]);
 						}
 					}
-
+					//console.log(boxItem.bat_hero);
 					//console.log(enemyList2);
-					if (!boxItem.bat_obstacle && enemyList2.length == 0) {
+					//if (!boxItem.bat_obstacle && enemyList2.length == 0) {
+					if (!boxItem.bat_obstacle) {
 						//console.log(boxItem.batBoxName,heroRouteOkList.lastId);
 						if (heroRouteOkList.lastId == -1) {
 							//--------------------------------还没记录到上一次的格子名字，证明是在获取第一次路线信息
@@ -469,8 +484,11 @@ cc.Class({
 				} else {
 					boxItem = boxItem.getComponent("batBox_basic");
 				}
-				self.matchOKHeroRoute(heroRouteOkList.name, boxItem); //-------传参英雄名和格子对象给确认数组，有时越墙后也能填补后续路线
-				self.touchStop();
+				if (boxItem.bat_hero.groupId != 2) {
+					//-----------------------------松手时也要检测松手位置的格子上是否有敌人，有就不再加入路线
+					self.matchOKHeroRoute(heroRouteOkList.name, boxItem); //-------传参英雄名和格子对象给确认数组，有时越墙后也能填补后续路线
+				}
+				self.touchStop(boxItem);
 			});
 			this.other.getChildByName("hero_" + point).on(cc.Node.EventType.TOUCH_END, function (event) {
 				var self_x = event.getLocation().x;
@@ -481,8 +499,11 @@ cc.Class({
 				} else {
 					boxItem = boxItem.getComponent("batBox_basic");
 				}
-				self.matchOKHeroRoute(heroRouteOkList.name, boxItem); //-------传参英雄名和格子对象给确认数组，有时越墙后也能填补后续路线
-				self.touchStop();
+				if (boxItem.bat_hero.groupId != 2) {
+					//-----------------------------松手时也要检测松手位置的格子上是否有敌人，有就不再加入路线
+					self.matchOKHeroRoute(heroRouteOkList.name, boxItem); //-------传参英雄名和格子对象给确认数组，有时越墙后也能填补后续路线
+				}
+				self.touchStop(boxItem);
 			});
 		}
 	},
@@ -495,10 +516,20 @@ cc.Class({
 				//--------------找出赋值英雄移动数组
 				var targetBoxItem = self.batBox.getChildByName("batBox_y" + heroList[j].route[heroList[j].indexNum].y + "_x" + heroList[j].route[heroList[j].indexNum].x);
 				var end = cc.v2(targetBoxItem.x, targetBoxItem.y); //------------------------获取下个目标xy
-				var start = self.other.getChildByName(heroList[j].heroName).position; //-------------获取目标当前xy
+				if (heroList[j].groupId == 1) {
+					var start = self.other.getChildByName(heroList[j].heroName).position;
+				} //-------------获取目标当前xy 
+				if (heroList[j].groupId == 2) {
+					var start = self.enemy.getChildByName(heroList[j].heroName).position;
+				} //-------------获取目标当前xy
 				var direction = cc.pNormalize(cc.pSub(end, start)); //------------------------先获取俩个向量的差，然后返回一个长度为1的标准化后的向量
 				var item = cc.pAdd(start, cc.pMult(direction, self.followSpeed)); //----缩放上面的标准化向量，然后把初始目标xy加上缩放的向量
-				self.other.getChildByName(heroList[j].heroName).setPosition(item); //----------------更新目标位置
+				if (heroList[j].groupId == 1) {
+					self.other.getChildByName(heroList[j].heroName).setPosition(item);
+				} //----------------更新目标位置
+				if (heroList[j].groupId == 2) {
+					self.enemy.getChildByName(heroList[j].heroName).setPosition(item);
+				} //----------------更新目标位置
 				var sum = cc.pDistance(start, end);
 				if (sum <= 1 && heroList[j].indexNum < heroList[j].route.length) {
 					//-----------------向量测出英雄和下一个格子中心在1范围内就进入下一个路线
@@ -507,38 +538,77 @@ cc.Class({
 					js_dataControl.updateHeroList(heroList); //----------------更新存储数据层js的英雄详细数组
 					if (heroList[j].route[heroList[j].indexNum - 1]) {
 						//清除当前移动对象上一步格子里的标识
-						console.log(self.batBox.getChildByName("batBox_y" + heroList[j].route[heroList[j].indexNum - 1].y + "_x" + heroList[j].route[heroList[j].indexNum - 1].x).getComponent("batBox_basic").bat_hero);
-						self.batBox.getChildByName("batBox_y" + heroList[j].route[heroList[j].indexNum - 1].y + "_x" + heroList[j].route[heroList[j].indexNum - 1].x).getComponent("batBox_basic").bat_hero.point = "";
+						//console.log(self.batBox.getChildByName("batBox_y" + heroList[j].route[heroList[j].indexNum-1].y + "_x" + heroList[j].route[heroList[j].indexNum-1].x).getComponent("batBox_basic").bat_hero);
+						self.batBox.getChildByName("batBox_y" + heroList[j].route[heroList[j].indexNum - 1].y + "_x" + heroList[j].route[heroList[j].indexNum - 1].x).getComponent("batBox_basic").bat_hero = { point: null, groupId: null };
+						//console.log(self.batBox.getChildByName("batBox_y" + heroList[j].route[heroList[j].indexNum-1].y + "_x" + heroList[j].route[heroList[j].indexNum-1].x).getComponent("batBox_basic").bat_hero);
 					}
-					console.log(self.batBox.getChildByName("batBox_y" + heroList[j].route[heroList[j].indexNum].y + "_x" + heroList[j].route[heroList[j].indexNum].x).getComponent("batBox_basic"));
+					//console.log(targetBoxItem.getComponent("batBox_basic"));
 
-					self.batBox.getChildByName("batBox_y" + heroList[j].route[heroList[j].indexNum].y + "_x" + heroList[j].route[heroList[j].indexNum].x).getComponent("batBox_basic").bat_hero.point = heroList[j].point; //------更改第一层战场格子上的英雄标记
-					//英雄路线移动完毕后执行以下方法
-					if (heroList[j].indexNum + 1 == heroList[j].route.length) {
+					//targetBoxItem.getComponent("batBox_basic").bat_hero.point = heroList[j].point;//------更改第一层战场格子上的英雄标记
+					targetBoxItem.getComponent("batBox_basic").bat_hero = {
+						point: heroList[j].point, //------更改第一层战场格子上的英雄标记
+						groupId: heroList[j].groupId
+						//console.log(heroList[j].groupId,self.batBox.getChildByName("batBox_y" + heroList[j].route[heroList[j].indexNum].y + "_x" + heroList[j].route[heroList[j].indexNum].x).getComponent("batBox_basic").bat_hero );
+						/*if(heroList[j].route[heroList[j].indexNum+1] && self.batBox.getChildByName("batBox_y" + heroList[j].route[heroList[j].indexNum+1].y + "_x" + heroList[j].route[heroList[j].indexNum+1].x).getComponent("batBox_basic").bat_hero.groupId == 2){
+      	for (var i = 0; i < heroList.length; i++) {
+      		if(heroList[i].point == heroList[j].lockTarget.point && heroList[i].groupId == heroList[j].lockTarget.groupId){
+      			var endTarget = self.batBox.getChildByName("batBox_y" + heroList[i].y + "_x" + heroList[i].x).getComponent("batBox_basic");
+      		}
+      	}
+      	console.log(heroList[j].groupId,endTarget);
+      	let checkRoute = js_algorithm_A.routeDirection({
+      		startTarget:	self.batBox.getChildByName("batBox_y" + heroList[j].y + "_x" + heroList[j].x).getComponent("batBox_basic"),
+      		endTarget:		endTarget,
+      		batBox:			self.batBox,
+      		hero_list:		self.hero_list,
+      		heroItem:		heroList[j]
+      	});
+      	console.log(checkRoute);
+      	heroList[j].route = checkRoute;
+      }*/
+						//英雄路线移动完毕后执行以下方法
+					};if (heroList[j].indexNum + 1 == heroList[j].route.length) {
 						heroList[j].state = 10;
-						console.log(self.batBox);
 					}
 					heroList[j].indexNum++;
+					/*if(self.batBox.getChildByName("batBox_y" + heroList[j].route[heroList[j].indexNum].y + "_x" + heroList[j].route[heroList[j].indexNum].x).getComponent("batBox_basic").bat_hero.groupId == 1){
+     	//---获取A*填充数组，条件是当前确认数组最后一个格子对象和最新所选到的格子对象，用作处理可能越几格的路线填充
+     	let checkRoute = this.routeDirection(targetBoxItem,boxItem);
+     	console.log(222222,checkRoute);
+     }*/
 				}
 			}
 		}
 	},
+	//获取英雄目标  ---根据英雄节点名字
+	getHeroByName: function getHeroByName(name) {
+		//
+		for (var i = 0; i < this.hero_list.length; i++) {
+			//------------循环英雄数组
+			if (this.hero_list[i].heroName == name) {
+				//----------匹配当前点击的格子上是否存在英雄
+				return this.hero_list[i];
+			}
+		}
+	},
 	//鼠标或手指碰触结束   (路线确认数组)
-	touchStop: function touchStop() {
+	touchStop: function touchStop(boxItem) {
 		var self = this;
 		var heroRouteOkList = this.hero_route_ok_list;
 		for (var z = 0; z < heroRouteOkList.list.length; z++) {
 			self.currentBox_destroy(heroRouteOkList.list[z]); //--------------------------销毁高亮资源方法
 		}
+		console.log(self.hero_list);
 		if (heroRouteOkList.list.length != 0) {
-			var heroList = self.hero_list.length;
-			for (var j = 0; j < heroList; j++) {
+			var heroList = self.hero_list;
+			for (var j = 0; j < heroList.length; j++) {
 				//---------匹配英雄表
-				if (self.hero_list[j].heroName == heroRouteOkList.name) {
+				if (heroList[j].heroName == heroRouteOkList.name) {
 					//--------------找出赋值英雄移动数组
-					self.hero_list[j].state = 11; //------------------------------------英雄状态切换为：移动
-					self.hero_list[j].route = heroRouteOkList.list; //------------------赋值路线
-					self.hero_list[j].indexNum = 0; //----------------------------------初始化移动路线的到达位置
+					heroList[j].state = 11; //------------------------------------英雄状态切换为：移动
+					heroList[j].route = heroRouteOkList.list; //------------------赋值路线
+					heroList[j].indexNum = 0; //----------------------------------初始化移动路线的到达位置
+					heroList[j].lockTarget = boxItem.bat_hero; //-----------------赋值英雄锁定的目标
 					heroRouteOkList.list = []; //---------------------------临时路线清空
 					heroRouteOkList.state = 0; //---------------------------临时路线状态改为不启用
 					heroRouteOkList.name = null; //-------------------------临时路线的英雄名清除
@@ -564,7 +634,13 @@ cc.Class({
 		} else {
 			var z = -1; //--------------获取确认数组的最后一个格子id
 			//---获取A*填充数组，条件是当前确认数组最后一个格子对象和最新所选到的格子对象，用作处理可能越几格的路线填充
-			var checkRoute = this.routeDirection(heroRouteOkList.list[heroRouteOkList.list.length - 1], boxItem);
+			var checkRoute = js_algorithm_A.routeDirection({
+				startTarget: heroRouteOkList.list[heroRouteOkList.list.length - 1],
+				endTarget: boxItem,
+				batBox: this.batBox,
+				hero_list: this.hero_list,
+				heroItem: this.getHeroByName(heroName)
+			});
 			console.log(checkRoute, heroRouteOkList.list);
 			if (checkRoute) {
 				checkRoute.splice(0, 1);
@@ -585,7 +661,7 @@ cc.Class({
 				heroRouteOkList.list.push(checkRoute[i]);
 				this.currentBox(this.batBox.getChildByName("batBox_y" + checkRoute[i].y + "_x" + checkRoute[i].x).getComponent("batBox_basic"));
 			}
-			console.log(repeatList, heroRouteOkList.list);
+			//console.log(repeatList,heroRouteOkList.list);
 			if (repeatList.length > 0) {
 				//-----------A*填充数组存在2个值时代表越墙或者终点不只在起点九宫格
 				for (var x = 0; x < heroRouteOkList.list.length; x++) {
@@ -598,7 +674,7 @@ cc.Class({
 						}
 					} else {
 						var temp_okItem = this.batBox.getChildByName("batBox_y" + heroRouteOkList.list[x].y + "_x" + heroRouteOkList.list[x].x).getComponent("batBox_basic").batBoxName;
-						console.log(repeatIndexItem.batBoxName, temp_okItem);
+						console.log(repeatIndexItem.batBoxName, temp_okItem, noRepeatIndex);
 						if (repeatIndexItem.batBoxName != temp_okItem && noRepeatIndex == -1) {
 							//还没检测到出现回滚点，就一直销毁前面的高亮路线
 							this.currentBox_destroy(heroRouteOkList.list[x]); //--------------------------销毁高亮资源方法
@@ -622,349 +698,8 @@ cc.Class({
 			}
 		}
 		//console.log(heroRouteOkList.list);
-	},
-	//A*算法   (原点目标，终点目标)
-	routeDirection: function routeDirection(startTarget, endTarget) {
-		if (startTarget.x == endTarget.x && startTarget.y == endTarget.y || endTarget.bat_obstacle || endTarget.bat_hero.groupId == 2) {
-			return false;
-		} //---------------如果起点和终点一样就退出方法
-		var openList = []; //---------------九宫格临时存放格子数组
-		var closeList = []; //--------------九宫格临时存放确认数组
-		var sureList = []; //---------------九宫格最终确认数组
-		var isSure_start = 0; //------------是否到达终点   0：不是   1：是
-		var isSure_end = 0; //--------------是否到达起点   0：不是   1：是
-		var minF = 0; //--------------------F值最小值
-		var minG = 0; //--------------------G值最小值
-		var parent = { x: startTarget.x, y: startTarget.y, isStart: 1, G: 0, H: 0, F: 0 }; //-----------isStart: 起点的唯一标识
-		openList.push(parent);
-		//方向数组  也可用作判断格子九宫格里其余格子是否在战场内数组   id：判断方向的数值   direction：上下左右斜方向值
-		var directionList = [{ y: 0, x: 1, direction: 1 }, { y: -1, x: 1, direction: 2 }, { y: -1, x: 0, direction: 3 }, { y: -1, x: -1, direction: 4 }, { y: 0, x: -1, direction: 5 }, { y: 1, x: -1, direction: 6 }, { y: 1, x: 0, direction: 7 }, { y: 1, x: 1, direction: 8 }];
-		this.batBox.getChildByName("batBox_y" + startTarget.y + "_x" + startTarget.x).setColor(cc.color("#008102")); //-----测试阶段，上颜色标识用
-		this.batBox.getChildByName("batBox_y" + endTarget.y + "_x" + endTarget.x).setColor(cc.color("#fff")); //-----测试阶段，上颜色标识用
-		var tempEndTarget = this.batBox.getChildByName("batBox_y" + endTarget.y + "_x" + endTarget.x).getComponent("batBox_basic");
-		for (var j = 0; j < openList.length; j++) {
-			if (isSure_start == 1) {
-				break;
-			} //----------已到达终点，退出循环
-			//console.log(j+"——————————————————————————————————————————————————");
-			//console.log(parent,openList[j]);
-			var obsExList = []; //--------------障碍物上下左右格子的数组
-			var obsId_right = null; //----------当前障碍物格子的右侧格子--临时禁止加入临时数组
-			var obsId_down = null; //-----------当前障碍物格子的下侧格子--临时禁止加入临时数组
-			var obsId_left = null; //-----------当前障碍物格子的左侧格子--临时禁止加入临时数组
-			var obsId_top = null; //------------当前障碍物格子的上侧格子--临时禁止加入临时数组
-			var tempEnemyList = [];
-			var enemId_right = null; //----------当前敌人格子的右侧格子--临时禁止加入临时数组
-			var enemId_down = null; //-----------当前敌人格子的下侧格子--临时禁止加入临时数组
-			var enemId_left = null; //-----------当前敌人格子的左侧格子--临时禁止加入临时数组
-			var enemId_top = null; //------------当前敌人格子的上侧格子--临时禁止加入临时数组
-			for (var i = 0; i < directionList.length; i++) {
-				//------------------获取路线障碍物上下左右格子的数组
-				//计算出九宫格内当前循环的格子是否在战场内  原理：利用格子的行列值进行运算，得出结果异常则不属于战场内格子
-				var tempCheckTarget = this.batBox.getChildByName("batBox_y" + (parent.y + directionList[i].y) + "_x" + (parent.x + directionList[i].x));
-				if (tempCheckTarget) {
-					//----------是否存在格子
-					var checkTarget = tempCheckTarget.getComponent("batBox_basic");
-					if (checkTarget.bat_obstacle) {
-						//---------------------当前循环九宫格格子是障碍物
-						if (i == 0 || i == 2 || i == 4 || i == 6) {
-							obsId_right = { y: checkTarget.y + directionList[0].y, x: checkTarget.x + directionList[0].x };
-							obsId_down = { y: checkTarget.y + directionList[2].y, x: checkTarget.x + directionList[2].x };
-							obsId_left = { y: checkTarget.y + directionList[4].y, x: checkTarget.x + directionList[4].x };
-							obsId_top = { y: checkTarget.y + directionList[6].y, x: checkTarget.x + directionList[6].x };
-							obsExList.push(obsId_right, obsId_down, obsId_left, obsId_top);
-						}
-					}
-					var enemyList2 = [];
-					for (var z = 0; z < this.hero_list.length; z++) {
-						if (this.hero_list[z].point == checkTarget.bat_hero.point && this.hero_list[z].groupId == 2) {
-							enemyList2.push(this.hero_list[z]);
-						}
-					}
-					if (enemyList2) {
-						if (i == 0 || i == 2 || i == 4 || i == 6) {
-							enemId_right = { y: checkTarget.y + directionList[0].y, x: checkTarget.x + directionList[0].x };
-							enemId_down = { y: checkTarget.y + directionList[2].y, x: checkTarget.x + directionList[2].x };
-							enemId_left = { y: checkTarget.y + directionList[4].y, x: checkTarget.x + directionList[4].x };
-							enemId_top = { y: checkTarget.y + directionList[6].y, x: checkTarget.x + directionList[6].x };
-							tempEnemyList.push(enemId_right, enemId_down, enemId_left, enemId_top);
-						}
-					}
-				}
-			}
-			for (var _i3 = 0; _i3 < directionList.length; _i3++) {
-				//------------------获取路线临时数组
-				var isOpen = 0; //------------------是否已记录在临时数组标识   0：不是   1：是
-				var isClose = 0; //-----------------是否已记录在确认数组标识   0：不是   1：是
-				var isObstacle = 0; //--------------是否障碍物   0：不是   1：是
-				var isObsEx = 0; //-----------------当前格子是否位于障碍物格子上下左右侧的格子位置上，用于判断是否处于斜格处理   0：不是   1：是
-				var isEnemy = false;
-				var isEnemy2 = 0;
-				//计算出九宫格内当前循环的格子  原理：利用格子的行列值进行运算，得出结果异常则不属于战场内格子
-				var _tempCheckTarget = this.batBox.getChildByName("batBox_y" + (parent.y + directionList[_i3].y) + "_x" + (parent.x + directionList[_i3].x));
-				if (_tempCheckTarget) {
-					//----------是否存在格子
-					var checkTarget = _tempCheckTarget.getComponent("batBox_basic");
-					var enemyList2 = [];
-					for (var z = 0; z < this.hero_list.length; z++) {
-						if (this.hero_list[z].point == checkTarget.bat_hero.point && this.hero_list[z].groupId == 2) {
-							enemyList2.push(this.hero_list[z]);
-						}
-					}
-					if (checkTarget.bat_obstacle) {
-						//---------------------当前循环九宫格格子是障碍物
-						isObstacle = 1;
-					} else if (enemyList2.length != 0) {
-						isEnemy = true;
-					} else {
-						for (var x = 0; x < closeList.length; x++) {
-							//------------------当前循环九宫格格子是否已记录在确认数组
-							if (checkTarget.x == closeList[x].x && checkTarget.y == closeList[x].y) {
-								isClose = 1;
-								break;
-							}
-						}
-						for (var _x = 0; _x < openList.length; _x++) {
-							//-------------------当前循环九宫格格子是否已记录在临时数组
-							if (checkTarget.x == openList[_x].x && checkTarget.y == openList[_x].y) {
-								isOpen = 1;
-								break;
-							}
-						}
-						for (var o = 0; o < obsExList.length; o++) {
-							//------------------当前循环九宫格格子是否位于障碍物格子上下左右侧的格子位置上，是的话就不能纳入赋值ghf处理
-							if (checkTarget.x == obsExList[o].x && checkTarget.y == obsExList[o].y) {
-								isObsEx = 1;
-								break;
-							}
-						}
-						for (var _o = 0; _o < tempEnemyList.length; _o++) {
-							//------------------当前循环九宫格格子是否位于障碍物格子上下左右侧的格子位置上，是的话就不能纳入赋值ghf处理
-							if (checkTarget.x == tempEnemyList[_o].x && checkTarget.y == tempEnemyList[_o].y) {
-								isEnemy2 = 1;
-								break;
-							}
-						}
-					}
-					if (isClose == 0 && isOpen == 0 && isObstacle == 0 && isObsEx == 0 && !isEnemy && isEnemy2 == 0) {
-						//-------------如任何检查判断为未触发，则视为当前格子是新处理格子
-						var H_x = Math.abs(tempEndTarget.x - checkTarget.x);
-						var H_y = Math.abs(tempEndTarget.y - checkTarget.y);
-						var H = (H_x + H_y) * 10;
-						var G = void 0;
-
-						if (_i3 == 0 || _i3 == 2 || _i3 == 4 || _i3 == 6) {
-							G = 10 + parent.G;
-						} else {
-							G = 14 + parent.G;
-						}
-						var item = {
-							x: checkTarget.x,
-							y: checkTarget.y,
-							G: G, //--------------------------------从起点 A 移动到指定方格的移动代价，沿着到达该方格而生成的路径。
-							H: H, //--------------------------------从指定的方格移动到终点 B 的估算成本
-							F: G + H,
-							direction: directionList[_i3].direction
-						};
-						var label_G = new cc.Node();
-						label_G.addComponent(cc.Label);
-						label_G.getComponent(cc.Label).fontSize = 12;
-						label_G.getComponent(cc.Label).string = checkTarget.y + "" + checkTarget.x + "，F：" + (G + H) + "\nG:" + G + "，H:" + H;
-						_tempCheckTarget.addChild(label_G);
-						openList.push(item);
-					}
-				}
-			}
-			if (openList[0].isStart == 1) {
-				//-----------处理起点的首次增删数组操作
-				closeList.push(openList[0]);
-				openList.splice(0, 1);
-				j = -1; //-------------------------------初始化循环次数
-			}
-			for (var _i4 = 0; _i4 < openList.length; _i4++) {
-				//----------循环取F值最小值
-				if (openList[_i4] && minF == 0) {
-					//------------------------为了排除可能会遇到没F值的父格子，当存在的F值的循环才初始化
-					minF = openList[_i4];
-				}
-				if (minF.F > openList[_i4].F) {
-					minF = openList[_i4];
-				}
-			}
-			for (var _i5 = 0; _i5 < openList.length; _i5++) {
-				//----------依靠最新的F值最小值格子得出新的父节点
-				if (openList[_i5].F == minF.F) {
-					parent = openList[_i5];
-					closeList.push(openList[_i5]);
-					openList.splice(_i5, 1);
-					j = -1; //-------------------------------初始化循环次数
-					minF = 0; //-----------初始化F值最小值
-				}
-			}
-			if (parent.x == tempEndTarget.x && parent.y == tempEndTarget.y) {
-				//---------------如果临时确认数组收录了终点，就退出循环
-				isSure_start = 1;
-			}
-		}
-		for (var _j5 = 0; _j5 < closeList.length; _j5++) {
-			this.batBox.getChildByName("batBox_y" + closeList[_j5].y + "_x" + closeList[_j5].x).setColor(cc.color("#008102")); //-----测试阶段，上颜色标识用
-		}
-		closeList = closeList.reverse();
-		sureList.push(parent);
-		//计算最终路线    原理：从临时确认数组中反过来走到起点
-		for (var _j6 = 0; _j6 < closeList.length; _j6++) {
-			if (isSure_end == 1) {
-				break;
-			} //----------已回到起点，退出循环
-			var _obsExList = []; //--------------障碍物上下左右格子的数组
-			var _obsId_right = null; //----------当前障碍物格子的右侧格子--临时禁止加入临时数组
-			var _obsId_down = null; //-----------当前障碍物格子的下侧格子--临时禁止加入临时数组
-			var _obsId_left = null; //-----------当前障碍物格子的左侧格子--临时禁止加入临时数组
-			var _obsId_top = null; //------------当前障碍物格子的上侧格子--临时禁止加入临时数组
-			var tempSureList = [];
-
-			var tempEnemyList = [];
-			var _enemId_right = null; //----------当前敌人格子的右侧格子--临时禁止加入临时数组
-			var _enemId_down = null; //-----------当前敌人格子的下侧格子--临时禁止加入临时数组
-			var _enemId_left = null; //-----------当前敌人格子的左侧格子--临时禁止加入临时数组
-			var _enemId_top = null; //------------当前敌人格子的上侧格子--临时禁止加入临时数组
-			console.log(_j6 + "——————————————————————————————————————————————————");
-			for (var _i6 = 0; _i6 < directionList.length; _i6++) {
-				//获取当前循环的父节点格子  
-				var _tempCheckTarget2 = this.batBox.getChildByName("batBox_y" + (parent.y + directionList[_i6].y) + "_x" + (parent.x + directionList[_i6].x));
-				if (_tempCheckTarget2) {
-					//----------是否存在格子
-					var checkTarget = _tempCheckTarget2.getComponent("batBox_basic");
-					if (checkTarget.bat_obstacle) {
-						//---------------------当前循环九宫格格子是障碍物
-						if (_i6 == 0 || _i6 == 2 || _i6 == 4 || _i6 == 6) {
-							_obsId_right = { y: checkTarget.y + directionList[0].y, x: checkTarget.x + directionList[0].x };
-							_obsId_down = { y: checkTarget.y + directionList[2].y, x: checkTarget.x + directionList[2].x };
-							_obsId_left = { y: checkTarget.y + directionList[4].y, x: checkTarget.x + directionList[4].x };
-							_obsId_top = { y: checkTarget.y + directionList[6].y, x: checkTarget.x + directionList[6].x };
-							_obsExList.push(_obsId_right, _obsId_down, _obsId_left, _obsId_top);
-						}
-					}
-				}
-				var enemyList2 = [];
-				for (var z = 0; z < this.hero_list.length; z++) {
-					if (this.hero_list[z].point == checkTarget.bat_hero.point && this.hero_list[z].groupId == 2) {
-						enemyList2.push(this.hero_list[z]);
-					}
-				}
-				if (enemyList2) {
-					if (_i6 == 0 || _i6 == 2 || _i6 == 4 || _i6 == 6) {
-						_enemId_right = { y: checkTarget.y + directionList[0].y, x: checkTarget.x + directionList[0].x };
-						_enemId_down = { y: checkTarget.y + directionList[2].y, x: checkTarget.x + directionList[2].x };
-						_enemId_left = { y: checkTarget.y + directionList[4].y, x: checkTarget.x + directionList[4].x };
-						_enemId_top = { y: checkTarget.y + directionList[6].y, x: checkTarget.x + directionList[6].x };
-						tempEnemyList.push(_enemId_right, _enemId_down, _enemId_left, _enemId_top);
-					}
-				}
-			}
-			for (var _i7 = 0; _i7 < directionList.length; _i7++) {
-				var _isClose = 0; //-----------------是否已记录在确认数组标识   0：不是   1：是
-				var _isObstacle = 0; //--------------是否障碍物   0：不是   1：是
-				var _isObsEx = 0; //-----------------当前格子是否位于障碍物格子上下左右侧的格子位置上，用于判断是否处于斜格处理   0：不是   1：是
-				var isEnemy = false;
-				var isEnemy2 = 0;
-				var _tempCheckTarget3 = this.batBox.getChildByName("batBox_y" + (parent.y + directionList[_i7].y) + "_x" + (parent.x + directionList[_i7].x));
-				if (_tempCheckTarget3) {
-					//----------是否存在格子
-					var checkTarget = _tempCheckTarget3.getComponent("batBox_basic");
-					if (checkTarget.bat_obstacle) {
-						//---------------------当前循环九宫格格子是障碍物
-						_isObstacle = 1;
-					} else if (enemyList2.length != 0) {
-						isEnemy = true;
-					} else {
-						for (var _x2 = 0; _x2 < closeList.length; _x2++) {
-							//------------------当前循环九宫格格子是否已记录在确认数组
-							if (checkTarget.x == closeList[_x2].x && checkTarget.y == closeList[_x2].y) {
-								for (var _o2 = 0; _o2 < _obsExList.length; _o2++) {
-									//------------------当前循环九宫格格子是否位于障碍物格子上下左右侧的格子位置上，是的话就不能纳入赋值ghf处理
-									if (checkTarget.x == _obsExList[_o2].x && checkTarget.y == _obsExList[_o2].y) {
-										_isObsEx = 1;
-										break;
-									}
-								}
-								for (var _o3 = 0; _o3 < tempEnemyList.length; _o3++) {
-									//------------------当前循环九宫格格子是否位于障碍物格子上下左右侧的格子位置上，是的话就不能纳入赋值ghf处理
-									if (checkTarget.x == tempEnemyList[_o3].x && checkTarget.y == tempEnemyList[_o3].y) {
-										isEnemy2 = 1;
-										break;
-									}
-								}
-								if (_isObsEx == 0 && isEnemy2 == 0) {
-									tempSureList.push(closeList[_x2]);
-								}
-							}
-						}
-					}
-				}
-			}
-			for (var _i8 = 0; _i8 < tempSureList.length; _i8++) {
-				//----------循环取F值最小值
-				if (tempSureList[_i8] && minG == 0) {
-					//------------------------为了排除可能会遇到没G值的父格子，当存在的G值的循环才初始化
-					minG = tempSureList[_i8];
-				}
-				if (minG.G > tempSureList[_i8].G) {
-					minG = tempSureList[_i8];
-				}
-			}
-			for (var _i9 = 0; _i9 < tempSureList.length; _i9++) {
-				//----------依靠最新的G值最小值格子得出新的父节点
-				if (tempSureList[_i9].G == minG.G) {
-					parent = tempSureList[_i9];
-					sureList.push(tempSureList[_i9]);
-					minG = 0; //-----------初始化G值最小值
-				}
-			}
-			if (parent.x == startTarget.x && parent.y == startTarget.y) {
-				//---------------如果临时确认数组收录了起点，就退出循环
-				isSure_end = 1;
-			}
-		}
-		for (var _j7 = 0; _j7 < sureList.length; _j7++) {
-			this.batBox.getChildByName("batBox_y" + sureList[_j7].y + "_x" + sureList[_j7].x).setColor(cc.color("#bbb")); //-----测试阶段，上颜色标识用
-		}
-		//console.log(sureList,closeList);
-		return sureList.reverse();
-	},
-	//获取最近敌人
-	getNearEnemy: function getNearEnemy(target, dataList) {
-		var tempList = [];
-		var enemyList = [];
-		var minF = 0;
-		for (var i = 0; i < dataList.length; i++) {
-			if (dataList[i].groupId == 2) {
-				var H_x = Math.abs(dataList[i].x - target.x);
-				var H_y = Math.abs(dataList[i].y - target.y);
-				var H = (H_x + H_y) * 10;
-				var G = 0;
-				var item = {
-					x: dataList[i].x,
-					y: dataList[i].y,
-					G: G, //--------------------------------从起点 A 移动到指定方格的移动代价，沿着到达该方格而生成的路径。
-					H: H, //--------------------------------从指定的方格移动到终点 B 的估算成本
-					F: G + H
-				};
-				tempList.push(item);
-				enemyList.push(dataList[i]);
-			}
-		}
-		for (var _i10 = 0; _i10 < tempList.length; _i10++) {
-			if (tempList[_i10].F && minF == 0) {
-				//------------------------为了排除可能会遇到没F值的父格子，当存在的F值的循环才初始化
-				minF = tempList[_i10];
-			}
-			if (minF.F > tempList[_i10].F) {
-				minF = tempList[_i10];
-			}
-		}
-		return minF;
 	}
+
 });
 
 cc._RF.pop();
