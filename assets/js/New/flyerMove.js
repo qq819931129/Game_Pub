@@ -31,6 +31,10 @@ cc.Class({
         var bezier = [thisPosition,
             cc.p(middleX, middleY+((position.x-thisPosition.x)*0.1)),
             position];
+<<<<<<< HEAD
+=======
+        //cc.log(bezier);
+>>>>>>> 3d555a1da44b2fdc8cb0de6b50d83780840db5ea
         var bezierTo = cc.bezierTo(1, bezier);
         this.node.runAction(bezierTo);
     },
