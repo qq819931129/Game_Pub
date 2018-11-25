@@ -1,0 +1,22 @@
+{
+  "__type__": "cc.SpriteFrame",
+  "content": {
+    "name": "0001-stand-down-01",
+    "texture": "6fc51a41-d344-485a-b30d-60ad5472ec83",
+    "atlas": "",
+    "rect": [
+      0,
+      0,
+      34,
+      84
+    ],
+    "offset": [
+      -3,
+      2
+    ],
+    "originalSize": [
+      40,
+      88
+    ]
+  }
+}

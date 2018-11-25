@@ -1,0 +1,22 @@
+{
+  "__type__": "cc.SpriteFrame",
+  "content": {
+    "name": "0001-stand-left-01",
+    "texture": "baf53035-830d-4506-90db-4576911f88fc",
+    "atlas": "",
+    "rect": [
+      0,
+      0,
+      70,
+      88
+    ],
+    "offset": [
+      -1,
+      4
+    ],
+    "originalSize": [
+      72,
+      96
+    ]
+  }
+}

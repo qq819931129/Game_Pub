@@ -1,0 +1,22 @@
+{
+  "__type__": "cc.SpriteFrame",
+  "content": {
+    "name": "0001-art-upleft-01",
+    "texture": "396e1fd5-c49a-4436-b1c8-3cd7c2b8bff4",
+    "atlas": "",
+    "rect": [
+      0,
+      0,
+      50,
+      91
+    ],
+    "offset": [
+      -3,
+      2.5
+    ],
+    "originalSize": [
+      56,
+      96
+    ]
+  }
+}

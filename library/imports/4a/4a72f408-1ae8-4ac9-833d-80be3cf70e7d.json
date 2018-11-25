@@ -1,0 +1,22 @@
+{
+  "__type__": "cc.SpriteFrame",
+  "content": {
+    "name": "0001-ack-upleft-09",
+    "texture": "d1f9c363-8870-4a39-ae4f-dc9ba3883c99",
+    "atlas": "",
+    "rect": [
+      1,
+      0,
+      65,
+      85
+    ],
+    "offset": [
+      -2.5,
+      1.5
+    ],
+    "originalSize": [
+      72,
+      88
+    ]
+  }
+}

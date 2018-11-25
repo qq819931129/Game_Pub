@@ -1,0 +1,22 @@
+{
+  "__type__": "cc.SpriteFrame",
+  "content": {
+    "name": "0001-stand-upleft-05",
+    "texture": "1a267673-5454-4218-b0f0-a7eecc01cc94",
+    "atlas": "",
+    "rect": [
+      0,
+      0,
+      59,
+      97
+    ],
+    "offset": [
+      -2.5,
+      3.5
+    ],
+    "originalSize": [
+      64,
+      104
+    ]
+  }
+}

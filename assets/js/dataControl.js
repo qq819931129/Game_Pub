@@ -41,3 +41,12 @@ module.exports.setObstacle = function(json){
 module.exports.getObstacle = function(){  
     return this.obstacle;    
 };
+//战场房间大对象
+module.exports.room = function(){
+	var item = {
+		heroList: this.heroList,
+		checkId: this.checkId,
+		obstacle: this.obstacle,
+	}
+    return item;    
+};

@@ -1,0 +1,22 @@
+{
+  "__type__": "cc.SpriteFrame",
+  "content": {
+    "name": "0001-ackStance-downright-02",
+    "texture": "2f6fda3c-2176-4a1c-b78a-6e768c11a904",
+    "atlas": "",
+    "rect": [
+      0,
+      0,
+      54,
+      85
+    ],
+    "offset": [
+      -1,
+      1.5
+    ],
+    "originalSize": [
+      56,
+      88
+    ]
+  }
+}

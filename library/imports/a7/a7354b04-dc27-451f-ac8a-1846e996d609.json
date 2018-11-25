@@ -1,0 +1,22 @@
+{
+  "__type__": "cc.SpriteFrame",
+  "content": {
+    "name": "0001-move-downright-06",
+    "texture": "b3b6ac3c-0ce2-44e5-af0f-b355b4e4255c",
+    "atlas": "",
+    "rect": [
+      1,
+      0,
+      56,
+      87
+    ],
+    "offset": [
+      -3,
+      0.5
+    ],
+    "originalSize": [
+      64,
+      88
+    ]
+  }
+}

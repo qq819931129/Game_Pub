@@ -1,30 +1,37 @@
 
-//获取目标可攻击的格子位置  data数组---看A*算法注释   directionList：方向数组
-module.exports.getAttPos = function(data,directionList){
+//获取原点目标在最终目标的所有可攻击格子位置list  data数组---看A*算法注释
+module.exports.getAttPos_list = function(data){
 	let attPos_list = [];//-------------可攻击的格子位置数组
-	let attPos_right = null;//----------当前可攻击的格子位置右侧格子
-	let attPos_down = null;//-----------当前可攻击的格子位置下侧格子
-	let attPos_left = null;//-----------当前可攻击的格子位置左侧格子
-	let attPos_top = null;//------------当前可攻击的格子位置上侧格子
-	for (let i = 0; i < 2; i++) {//data.heroItem.
-		let tempCheckTarget = data.batBox.getChildByName("batBox_y" + (data.endTarget.y) + "_x" + (data.endTarget.x));
-		if (tempCheckTarget) {//----------是否存在格子
-			var checkTarget = tempCheckTarget.getComponent("batBox_basic");
-			if (i == 0) {
-				attPos_right = {y:(checkTarget.y + directionList[0].y),x:(checkTarget.x + directionList[0].x)};
-				attPos_down = {y:(checkTarget.y + directionList[2].y),x:(checkTarget.x + directionList[2].x)};
-				attPos_left = {y:(checkTarget.y + directionList[4].y),x:(checkTarget.x + directionList[4].x)};
-				attPos_top = {y:(checkTarget.y + directionList[6].y),x:(checkTarget.x + directionList[6].x)};
-				attPos_list.push(attPos_right,attPos_down,attPos_left,attPos_top);
-			}else{
-				attPos_right = {y:(checkTarget.y + directionList[0].y * (i+1)),x:(checkTarget.x + directionList[0].x * (i+1))};
-				attPos_down = {y:(checkTarget.y + directionList[2].y * (i+1)),x:(checkTarget.x + directionList[2].x * (i+1))};
-				attPos_left = {y:(checkTarget.y + directionList[4].y * (i+1)),x:(checkTarget.x + directionList[4].x * (i+1))};
-				attPos_top = {y:(checkTarget.y + directionList[6].y * (i+1)),x:(checkTarget.x + directionList[6].x * (i+1))};
-				attPos_list.push(attPos_right,attPos_down,attPos_left,attPos_top);
+	//攻击范围公式数组
+	let directionList = [[{y:0,x:1},{y:-1,x:0},{y:0,x:-1},{y:1,x:0}],
+	[{y:0,x:2},{y:-1,x:1},{y:-2,x:0},{y:-1,x:-1},{y:0,x:-2},{y:1,x:-1},{y:2,x:0},{y:1,x:1}],
+	[{y:0,x:3},{y:-1,x:2},{y:-2,x:1},{y:-3,x:0},{y:-2,x:-1},{y:-1,x:-2},{y:0,x:-3},{y:1,x:-2},{y:2,x:-1},{y:3,x:0},{y:2,x:1},{y:1,x:2}]
+	];
+	if(data.heroItem.atkRangedDistMin == data.heroItem.atkRangedDistMax){
+		var atkRangedMin = data.heroItem.atkRangedDistMin - 1;
+	}else{
+		var atkRangedMin = data.heroItem.atkRangedDistMin;
+	}
+	for (let i = 0; i < data.heroItem.atkRangedDistMax; i++) {//data.heroItem.
+		if(i == 0 || i >= atkRangedMin){
+			//获取最终目标的所有可攻击格子位置
+			//let tempCheckTarget = data.batBox.getChildByName("batBox_y" + (data.endTarget.y) + "_x" + (data.endTarget.x));
+			//获取原点目标在最终目标的所有可攻击格子位置
+			let tempCheckTarget = data.batBox.getChildByName("batBox_y" + (data.startTarget.y) + "_x" + (data.startTarget.x));
+			if (tempCheckTarget) {//----------是否存在格子
+				var checkTarget = tempCheckTarget.getComponent("batBox_basic");
+				for (let j = 0; j < directionList[i].length; j++) {
+					let attPos_item = {y:(checkTarget.y + directionList[i][j].y),x:(checkTarget.x + directionList[i][j].x)};
+					attPos_list.push(attPos_item);
+				}
 			}
 		}
 	}
+	return attPos_list;
+}
+//获取原点目标在最终目标 最近的可攻击的格子位置  data数组---看A*算法注释
+module.exports.getAttPos = function(data){
+	let attPos_list = module.exports.getAttPos_list(data);
 	console.log(attPos_list);
 	//重大问题，英雄路过的路线上有其他英雄，会被清除bat_hero，要改移动算法那边
 	for (let i = 0; i < attPos_list.length; i++) {
@@ -42,6 +49,50 @@ module.exports.getAttPos = function(data,directionList){
 		}
 	}
 }
+//索敌算法--------根据自身攻击范围搜索最近敌人 ，返回敌人所在的格子对象
+module.exports.getRangeEnemy = function(data){
+	let attPos_list = module.exports.getAttPos_list(data);
+	let tempList = [];
+	let enemyList = [];
+	var minF = 0;
+	for (let i = 0; i < data.hero_list.length; i++) {
+		if (data.hero_list[i].groupId == 2) {
+	    	let H_x = Math.abs(data.hero_list[i].x - data.startTarget.x);
+			let H_y = Math.abs(data.hero_list[i].y - data.startTarget.y);
+			let H = (H_x + H_y) * 10;
+			let G = 0;
+			let item = {
+				x: data.hero_list[i].x,
+				y: data.hero_list[i].y,
+	    		G: G,//--------------------------------从起点 A 移动到指定方格的移动代价，沿着到达该方格而生成的路径。
+	    		H: H,//--------------------------------从指定的方格移动到终点 B 的估算成本
+	    		F: G+H
+			}
+			tempList.push(item);
+			enemyList.push(data.hero_list[i]);
+		}
+	}
+	for (let i = 0; i < tempList.length; i++) {
+		if (tempList[i].F && minF == 0) {//------------------------为了排除可能会遇到没F值的父格子，当存在的F值的循环才初始化
+			minF = tempList[i];
+		}
+		if (minF.F > tempList[i].F) {//根据F值取最近敌人
+			minF = tempList[i];
+		}
+	}
+	console.log(data,attPos_list);
+	var send = data.batBox.getChildByName("batBox_y" + minF.y + "_x" + minF.x).getComponent("batBox_basic");
+	for (var i = 0; i < attPos_list.length; i++) {
+		if(attPos_list[i].y == minF.y && attPos_list[i].x == minF.x){
+			for (var j = 0; j < data.hero_list.length; j++) {
+				if(data.hero_list[j].y == minF.y && data.hero_list[j].x == minF.x){
+					return data.hero_list[j];
+				}
+			}
+		}
+	}
+	return false;
+};
 
 //A*算法   (data数组---startTarget：原点目标，endTarget：终点目标，batBox：全局格子数组，hero_list：全局英雄数组，heroItem：移动目标对象)
 module.exports.routeDirection = function(data){
@@ -63,17 +114,15 @@ module.exports.routeDirection = function(data){
 	data.batBox.getChildByName("batBox_y" + data.startTarget.y + "_x" + data.startTarget.x).setColor(cc.color("#008102"));//-----测试阶段，上颜色标识用
 	data.batBox.getChildByName("batBox_y" + data.endTarget.y + "_x" + data.endTarget.x).setColor(cc.color("#fff"));//-----测试阶段，上颜色标识用
 	if(data.endTarget.bat_hero.groupId == 2){//----------------获取敌人目标
-		tempEndTarget = module.exports.getAttPos(data,directionList);
+		tempEndTarget = module.exports.getAttPos(data);
 	}
 	if(!tempEndTarget){//如没有获取到敌人目标，就读取传参进来的最终目标
 		tempEndTarget = data.batBox.getChildByName("batBox_y" + data.endTarget.y + "_x" + data.endTarget.x).getComponent("batBox_basic");
 	}
-	if (data.startTarget.x == tempEndTarget.x && data.startTarget.y == tempEndTarget.y) { return false; }//---第二次检测，起点和终点一样就退出方法，因为可能上面的处理结果会把最终位置改变为路线起点
+	console.log(tempEndTarget);
+	if (data.startTarget.x == tempEndTarget.x && data.startTarget.y == tempEndTarget.y) {  return false; }//---第二次检测，起点和终点一样就退出方法，因为可能上面的处理结果会把最终位置改变为路线起点
 	for (let j = 0; j < openList.length; j++) {
-		//console.log(isSure_start);
 		if (isSure_start == 1) { break; }//----------已到达终点，退出循环
-		//console.log(j+"——————————————————————————————————————————————————");
-		//console.log(parent,openList[j]);
 		let obsExList = [];//--------------障碍物上下左右格子的数组
 		let obsId_right = null;//----------当前障碍物格子的右侧格子--临时禁止加入临时数组
 		let obsId_down = null;//-----------当前障碍物格子的下侧格子--临时禁止加入临时数组
@@ -238,7 +287,6 @@ module.exports.routeDirection = function(data){
 		let enemId_down = null;//-----------当前敌人格子的下侧格子--临时禁止加入临时数组
 		let enemId_left = null;//-----------当前敌人格子的左侧格子--临时禁止加入临时数组
 		let enemId_top = null;//------------当前敌人格子的上侧格子--临时禁止加入临时数组
-		//console.log(j+"——————————————————————————————————————————————————");
 		for (let i = 0; i < directionList.length; i++) {
 			//获取当前循环的父节点格子  
     		let tempCheckTarget = data.batBox.getChildByName("batBox_y" + (parent.y + directionList[i].y) + "_x" + (parent.x + directionList[i].x));
@@ -257,7 +305,9 @@ module.exports.routeDirection = function(data){
 			var enemyList2 = [];
 			for (var z = 0; z < data.hero_list.length; z++) {
 				if(data.hero_list[z].point == checkTarget.bat_hero.point && data.hero_list[z].groupId == 2){
+					console.log(data.hero_list[z].point , checkTarget.bat_hero.point , data.hero_list[z].groupId == 2);
 					enemyList2.push(data.hero_list[z]);
+					console.log(enemyList2);
 				}
 			}
 			if (enemyList2) {
@@ -279,11 +329,12 @@ module.exports.routeDirection = function(data){
 			let tempCheckTarget = data.batBox.getChildByName("batBox_y" + (parent.y + directionList[i].y) + "_x" + (parent.x + directionList[i].x));
     		if (tempCheckTarget) {//----------是否存在格子
     			var checkTarget = tempCheckTarget.getComponent("batBox_basic");
-    			if (checkTarget.bat_obstacle) {//---------------------当前循环九宫格格子是障碍物
+    			/*if (checkTarget.bat_obstacle) {//---------------------当前循环九宫格格子是障碍物
     				isObstacle = 1;
     			}else if(enemyList2.length != 0){
+    				console.log(6666);
     				isEnemy = true;
-    			}else{
+    			}else{*/
     				for (let x = 0; x < closeList.length; x++) {//------------------当前循环九宫格格子是否已记录在确认数组
 		    			if (checkTarget.x == closeList[x].x && checkTarget.y == closeList[x].y) {
 		    				for (let o = 0; o < obsExList.length; o++) {//------------------当前循环九宫格格子是否位于障碍物格子上下左右侧的格子位置上，是的话就不能纳入赋值ghf处理
@@ -303,9 +354,10 @@ module.exports.routeDirection = function(data){
 		    				}
 		    			}
 		    		}
-    			}
+    			//}
     		}
 		}
+		console.log(tempSureList);
 		for (let i = 0; i < tempSureList.length; i++) {//----------循环取F值最小值
     		if (tempSureList[i] && minG == 0) {//------------------------为了排除可能会遇到没G值的父格子，当存在的G值的循环才初始化
     			minG = tempSureList[i];
@@ -328,30 +380,31 @@ module.exports.routeDirection = function(data){
 	for (let j = 0; j < sureList.length; j++) {
 		data.batBox.getChildByName("batBox_y" + sureList[j].y + "_x" + sureList[j].x).setColor(cc.color("#bbb"));//-----测试阶段，上颜色标识用
 	}
-	//console.log(sureList,closeList);
+	console.log(sureList,closeList);
 	return sureList.reverse();
 };
 
-//获取最近敌人  
+
+//索敌算法--------根据自身为出发点搜索最近敌人 ，返回敌人所在的格子对象
 module.exports.getNearEnemy = function(data){
 	let tempList = [];
 	let enemyList = [];
 	var minF = 0;
-	for (let i = 0; i < data.dataList.length; i++) {
-		if (data.dataList[i].groupId == 2) {
-	    	let H_x = Math.abs(data.dataList[i].x - data.target.x);
-			let H_y = Math.abs(data.dataList[i].y - data.target.y);
+	for (let i = 0; i < data.hero_list.length; i++) {
+		if (data.hero_list[i].groupId == 2) {
+	    	let H_x = Math.abs(data.hero_list[i].x - data.target.x);
+			let H_y = Math.abs(data.hero_list[i].y - data.target.y);
 			let H = (H_x + H_y) * 10;
 			let G = 0;
 			let item = {
-				x: data.dataList[i].x,
-				y: data.dataList[i].y,
+				x: data.hero_list[i].x,
+				y: data.hero_list[i].y,
 	    		G: G,//--------------------------------从起点 A 移动到指定方格的移动代价，沿着到达该方格而生成的路径。
 	    		H: H,//--------------------------------从指定的方格移动到终点 B 的估算成本
 	    		F: G+H
 			}
 			tempList.push(item);
-			enemyList.push(data.dataList[i]);
+			enemyList.push(data.hero_list[i]);
 		}
 	}
 	for (let i = 0; i < tempList.length; i++) {

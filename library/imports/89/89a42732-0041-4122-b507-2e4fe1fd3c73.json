@@ -1,0 +1,22 @@
+{
+  "__type__": "cc.SpriteFrame",
+  "content": {
+    "name": "0001-stand-upright-15",
+    "texture": "a8978989-ac46-47dc-8dd3-ae88a263cf3a",
+    "atlas": "",
+    "rect": [
+      0,
+      0,
+      64,
+      90
+    ],
+    "offset": [
+      0,
+      3
+    ],
+    "originalSize": [
+      64,
+      96
+    ]
+  }
+}

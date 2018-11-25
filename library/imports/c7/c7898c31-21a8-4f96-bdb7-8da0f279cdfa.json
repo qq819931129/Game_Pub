@@ -1,0 +1,22 @@
+{
+  "__type__": "cc.SpriteFrame",
+  "content": {
+    "name": "0001-die-upleft-01",
+    "texture": "da4a2529-4c0f-4c8e-a1d0-8aea067a8879",
+    "atlas": "",
+    "rect": [
+      0,
+      1,
+      95,
+      82
+    ],
+    "offset": [
+      -0.5,
+      2
+    ],
+    "originalSize": [
+      96,
+      88
+    ]
+  }
+}

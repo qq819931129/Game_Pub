@@ -1,0 +1,22 @@
+{
+  "__type__": "cc.SpriteFrame",
+  "content": {
+    "name": "0001-move-upright-08",
+    "texture": "736d38df-cf99-4ca2-814b-1e57bef62a91",
+    "atlas": "",
+    "rect": [
+      0,
+      0,
+      60,
+      100
+    ],
+    "offset": [
+      -2,
+      2
+    ],
+    "originalSize": [
+      64,
+      104
+    ]
+  }
+}

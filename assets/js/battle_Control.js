@@ -201,6 +201,7 @@ cc.Class({
     	//console.log(this.batlist,this.batBox.getChildByName("batBox_y" + 0 + "_x" + 2).getComponent("batBox_basic"));
     	
     	js_dataControl.updateHeroList(this.hero_list);
+    	console.log(js_dataControl.room());
 		var heroRouteOkList = this.hero_route_ok_list;
     	this.background.getChildByName("stopAllMove").on(cc.Node.EventType.TOUCH_START, function ( event ) {
 			let selfItem = this;
@@ -218,9 +219,17 @@ cc.Class({
 			let heroList = self.hero_list;
 			for (let j = 0; j < heroList.length; j++) {//---------匹配英雄表
 				//if (heroList[j].groupId == 1) {
-				if (heroList[j].heroName == "hero_1") {
+				if (heroList[j].heroName == "hero_6") {
 					//js_algorithm_A.getNearEnemy({target:heroList[j],dataList:heroList,batBox:self.batBox})
-					let checkRoute = js_algorithm_A.routeDirection({
+					let aaa = js_algorithm_A.getRangeEnemy({
+						startTarget:	heroList[j],
+						//endTarget:		self.batBox.getChildByName("batBox_y" + 3 + "_x" + 7).getComponent("batBox_basic"),
+						batBox:			self.batBox,
+						hero_list:		self.hero_list,
+						heroItem:		heroList[j]
+					});
+					console.log(aaa);
+					/*let checkRoute = js_algorithm_A.routeDirection({
 						startTarget:	heroList[j],
 						endTarget:		self.batBox.getChildByName("batBox_y" + 3 + "_x" + 7).getComponent("batBox_basic"),
 						batBox:			self.batBox,
@@ -230,7 +239,8 @@ cc.Class({
 					console.log(checkRoute);
 					heroList[j].route = checkRoute;
 					heroList[j].state = 11;
-					heroList[j].indexNum = 0;
+					heroList[j].indexNum = 0;*/
+					
 					//self.matchOKHeroRoute(heroList[j].name,self.getNearEnemy(heroList[j],heroList));//-------传参英雄名和格子对象给确认数组
 					//console.log(heroList[j],checkRoute,self.getNearEnemy(heroList[j],heroList));
 				}
@@ -530,7 +540,7 @@ cc.Class({
 		for (let z = 0; z < heroRouteOkList.list.length; z++) {
 			self.currentBox_destroy(heroRouteOkList.list[z]);//--------------------------销毁高亮资源方法
 		}
-		console.log(self.hero_list);
+		//console.log(self.hero_list);
     	if (heroRouteOkList.list.length != 0) {
 			let heroList = self.hero_list;
 			for (let j = 0; j < heroList.length; j++) {//---------匹配英雄表
