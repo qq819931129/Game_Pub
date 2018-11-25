@@ -1,6 +1,7 @@
 const AttackType = cc.Enum({
     Melee: 1, //近战
-    Range: 2  //远程
+    Range: 2, //范围远程,有斜角
+    straight: 3 // 直线远程，无斜角
 });
 
 //碰撞组名

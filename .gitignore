@@ -1,1 +1,6 @@
 *.map
+build-templates
+settings
+temp
+local
+library
