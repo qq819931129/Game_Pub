@@ -1,6 +1,6 @@
 
-//获取原点目标在最终目标的所有可攻击格子位置list  data数组---看A*算法注释
-module.exports.getAttPos_list = function(data){
+//获取目标所有可攻击格子位置list  data数组---看A*算法注释  type索敌方式:（1-获取原点目标在最终目标   最近的可攻击的格子位置）（2-获取原点目标位置范围内所有可攻击格子位置）
+module.exports.getAttPos_list = function(data,type){
 	let attPos_list = [];//-------------可攻击的格子位置数组
 	//攻击范围公式数组
 	let directionList = [[{y:0,x:1},{y:-1,x:0},{y:0,x:-1},{y:1,x:0}],
@@ -14,10 +14,14 @@ module.exports.getAttPos_list = function(data){
 	}
 	for (let i = 0; i < data.heroItem.atkRangedDistMax; i++) {//data.heroItem.
 		if(i == 0 || i >= atkRangedMin){
-			//获取最终目标的所有可攻击格子位置
-			//let tempCheckTarget = data.batBox.getChildByName("batBox_y" + (data.endTarget.y) + "_x" + (data.endTarget.x));
-			//获取原点目标在最终目标的所有可攻击格子位置
-			let tempCheckTarget = data.batBox.getChildByName("batBox_y" + (data.startTarget.y) + "_x" + (data.startTarget.x));
+			if(type == 1){
+				//获取原点目标在最终目标   最近的可攻击的格子位置
+				var tempCheckTarget = data.batBox.getChildByName("batBox_y" + (data.endTarget.y) + "_x" + (data.endTarget.x));
+			}
+			if(type == 2){
+				//获取原点目标位置范围内所有可攻击格子位置
+				var tempCheckTarget = data.batBox.getChildByName("batBox_y" + (data.startTarget.y) + "_x" + (data.startTarget.x));
+			}
 			if (tempCheckTarget) {//----------是否存在格子
 				var checkTarget = tempCheckTarget.getComponent("batBox_basic");
 				for (let j = 0; j < directionList[i].length; j++) {
@@ -31,9 +35,8 @@ module.exports.getAttPos_list = function(data){
 }
 //获取原点目标在最终目标 最近的可攻击的格子位置  data数组---看A*算法注释
 module.exports.getAttPos = function(data){
-	let attPos_list = module.exports.getAttPos_list(data);
+	let attPos_list = module.exports.getAttPos_list(data,1);
 	console.log(attPos_list);
-	//重大问题，英雄路过的路线上有其他英雄，会被清除bat_hero，要改移动算法那边
 	for (let i = 0; i < attPos_list.length; i++) {
 		let tempCheckTarget = data.batBox.getChildByName("batBox_y" + (attPos_list[i].y) + "_x" + (attPos_list[i].x));
 		if (tempCheckTarget) {//----------是否存在格子
@@ -43,7 +46,7 @@ module.exports.getAttPos = function(data){
 				continue;
 			}
 			if (!checkTarget.bat_hero.point) {//---------------------当前循环九宫格格子是英雄
-				console.log(checkTarget);
+				//console.log(checkTarget);
 				return checkTarget;
 			}
 		}
@@ -51,7 +54,7 @@ module.exports.getAttPos = function(data){
 }
 //索敌算法--------根据自身攻击范围搜索最近敌人 ，返回敌人所在的格子对象
 module.exports.getRangeEnemy = function(data){
-	let attPos_list = module.exports.getAttPos_list(data);
+	let attPos_list = module.exports.getAttPos_list(data,2);
 	let tempList = [];
 	let enemyList = [];
 	var minF = 0;
@@ -80,8 +83,8 @@ module.exports.getRangeEnemy = function(data){
 			minF = tempList[i];
 		}
 	}
-	console.log(data,attPos_list);
-	var send = data.batBox.getChildByName("batBox_y" + minF.y + "_x" + minF.x).getComponent("batBox_basic");
+	console.log(data,attPos_list,minF);
+	//var send = data.batBox.getChildByName("batBox_y" + minF.y + "_x" + minF.x).getComponent("batBox_basic");
 	for (var i = 0; i < attPos_list.length; i++) {
 		if(attPos_list[i].y == minF.y && attPos_list[i].x == minF.x){
 			for (var j = 0; j < data.hero_list.length; j++) {
@@ -119,7 +122,7 @@ module.exports.routeDirection = function(data){
 	if(!tempEndTarget){//如没有获取到敌人目标，就读取传参进来的最终目标
 		tempEndTarget = data.batBox.getChildByName("batBox_y" + data.endTarget.y + "_x" + data.endTarget.x).getComponent("batBox_basic");
 	}
-	console.log(tempEndTarget);
+	//console.log(tempEndTarget);
 	if (data.startTarget.x == tempEndTarget.x && data.startTarget.y == tempEndTarget.y) {  return false; }//---第二次检测，起点和终点一样就退出方法，因为可能上面的处理结果会把最终位置改变为路线起点
 	for (let j = 0; j < openList.length; j++) {
 		if (isSure_start == 1) { break; }//----------已到达终点，退出循环
@@ -204,12 +207,12 @@ module.exports.routeDirection = function(data){
 	    					break;
 	    				}
     				}
-	    			for (let o = 0; o < tempEnemyList.length; o++) {//------------------当前循环九宫格格子是否位于障碍物格子上下左右侧的格子位置上，是的话就不能纳入赋值ghf处理
+	    			/*for (let o = 0; o < tempEnemyList.length; o++) {//------------------当前循环九宫格格子是否位于障碍物格子上下左右侧的格子位置上，是的话就不能纳入赋值ghf处理
     					if (checkTarget.x == tempEnemyList[o].x && checkTarget.y == tempEnemyList[o].y) {
 	    					isEnemy2 = 1;
 	    					break;
 	    				}
-    				}
+    				}*/
     			}
     			if (isClose == 0 && isOpen == 0 && isObstacle == 0 && isObsEx == 0 && !isEnemy && isEnemy2 == 0) {//-------------如任何检查判断为未触发，则视为当前格子是新处理格子
 					let H_x = Math.abs(tempEndTarget.x - checkTarget.x);
@@ -343,13 +346,13 @@ module.exports.routeDirection = function(data){
 			    					break;
 			    				}
 		    				}
-			    			for (let o = 0; o < tempEnemyList.length; o++) {//------------------当前循环九宫格格子是否位于障碍物格子上下左右侧的格子位置上，是的话就不能纳入赋值ghf处理
+			    			/*for (let o = 0; o < tempEnemyList.length; o++) {//------------------当前循环九宫格格子是否位于障碍物格子上下左右侧的格子位置上，是的话就不能纳入赋值ghf处理
 		    					if (checkTarget.x == tempEnemyList[o].x && checkTarget.y == tempEnemyList[o].y) {
 			    					isEnemy2 = 1;
 			    					break;
 			    				}
-		    				}
-		    				if (isObsEx == 0 && isEnemy2 == 0) {
+		    				}*/
+		    				if (isObsEx == 0) {
 		    					tempSureList.push(closeList[x]);
 		    				}
 		    			}
