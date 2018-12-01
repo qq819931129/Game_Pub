@@ -89,17 +89,12 @@ cc.Class({
     	this.indexNum = 0;
     	
     	this.checkId = js_dataControl.getcheckId();//-------获取关卡id
-		//var bat = this.batBox.children;
 		for (let i = 0; i < this.batlist.length; i++) {
 			var batItem = this.batlist[i].getComponent("batBox_basic");
-			/*this.batlist.push(bat[i].getComponent("batBox_basic"));
-			this.batlist[i].batBoxName = bat[i].name;
-			this.batlist[i].bat_hero = {point:null,groupId:null};*/
-			
 			batItem.batBoxName = this.batlist[i].name;
 			batItem.bat_hero = {point:null,groupId:null};
 		}
-		console.log(this.batlist);
+		//console.log(this.batlist);
         this.perfabPool = this.getComponent("prefabPool");
         this.perfabPool.init();
 		this.battleInit_obstacle(this.checkId,personPrefabNew);
@@ -128,7 +123,7 @@ cc.Class({
     },
     //生成第三层战场数组-英雄   (关卡id)
     battleInit_hero: function(checkId,personPrefabNew){
-    	let tempList = [{y: 4,x: 2,point: 6},{y: 3,x: 2,point: 7},{y: 2,x: 2,point: 8},{y: 1,x: 2,point: 9},{y: 0,x: 2,point: 10},{y: 4,x: 1,point: 11}];//----我方阵容-测试用的
+    	let tempList = [{y: 4,x: 2,point: 6},{y: 3,x: 0,point: 7},{y: 2,x: 2,point: 8},{y: 1,x: 2,point: 9},{y: 0,x: 2,point: 10},{y: 4,x: 1,point: 11}];//----我方阵容-测试用的
 		//let tempList = [{y: 4,x: 2,point: 6}];
 		let otherList = [];//-----------------------我方阵容
     	let otherList_lock_id = 0;//----------------我方阵容——位置是否有重复英雄导入标识  0:是，1:不是
@@ -137,7 +132,7 @@ cc.Class({
     	//let fulinList = [{id: "01",point: 1},{id: "02",point: 2},{id: "03",point: 3}];//------符灵技能栏
     	if (checkId == 1) {
 			//var enemyList = [{y: 4,x: 9,point: 1},{y: 2,x: 9,point: 2},{y: 0,x: 9,point: 3},{y: 3,x: 7,point: 4},{y: 1,x: 7,point: 5}];//----敌方阵容
-			var enemyList = [{y: 3,x: 8,point: 1}];
+			var enemyList = [{y: 3,x: 9,point: 1}];
     	}
     	if (checkId == 2) {
     		var enemyList = [{y: 3,x: 9,point: 1},{y: 1,x: 9,point: 2},{y: 0,x: 9,point: 3},{y: 0,x: 7,point: 4},{y: 1,x: 7,point: 5}];//----敌方阵容
@@ -220,7 +215,6 @@ cc.Class({
 			for (let j = 0; j < heroList.length; j++) {//---------匹配英雄表
 				//if (heroList[j].groupId == 1) {
 				if (heroList[j].heroName == "hero_6") {
-					//js_algorithm_A.getNearEnemy({target:heroList[j],dataList:heroList,batBox:self.batBox})
 					let aaa = js_algorithm_A.getRangeEnemy({
 						startTarget:	heroList[j],
 						//endTarget:		self.batBox.getChildByName("batBox_y" + 3 + "_x" + 7).getComponent("batBox_basic"),
@@ -322,8 +316,8 @@ cc.Class({
 		var y = this.batBox.getChildByName("batBox_y" + box.y + "_x" + box.x).y;
     	item.setPosition(x,y);
     	item.name = "hero_" + point;
-    	if(groupId == 1){ var hero_basic = this.other.getChildByName(item.name).getComponent("person"); }
-    	if(groupId == 2){ var hero_basic = this.enemy.getChildByName(item.name).getComponent("person"); }
+    	if(groupId == 1){  var hero_basic = this.other.getChildByName(item.name).getComponent("person"); }
+    	if(groupId == 2){  var hero_basic = this.enemy.getChildByName(item.name).getComponent("person"); }
     	hero_basic.groupId = groupId;
     	hero_basic.heroName = item.name;
     	hero_basic.x = box.x;
@@ -339,19 +333,6 @@ cc.Class({
 		hero_basic.lockTarget = null,					//英雄移动路线里锁定的最终目标物体
 		hero_basic.state	= 10,					//英雄状态   10：待命，11：移动
 		hero_basic.isDie   = 1						//死亡标识   0：死亡，1:未死亡
-    	
-    	/*let itemList = {
-    		groupId : groupId,				//英雄敌我阵容标识
-    		heroName: item.name,			//英雄预存资源生成名称
-    		x		: box.x,				//英雄当前所处x轴
-    		y		: box.y,				//英雄当前所处y轴
-    		point	: point,				//英雄标记  纪录具体是哪个英雄
-    		indexNum: 0,					//英雄移动路线的当前到达位置，就是说数组里的第几个位置
-    		route	: [],					//英雄移动路线   状态切换为移动时，赋值路线
-    		lockTarget: null,					//英雄移动路线里锁定的最终目标物体
-			state	: 10,					//英雄状态   10：待命，11：移动
-			isDie   : 1						//死亡标识   0：死亡，1:未死亡
-    	}*/
     	this.hero_list.push(hero_basic);
     	var self = this;
 		var heroRouteOkList = this.hero_route_ok_list;
@@ -368,21 +349,6 @@ cc.Class({
 				self.background.addChild(tempColl_touch);
 				tempColl_touch.setPosition(self_x,self_y);
 				self.background.getChildByName("tempColl_touch").getComponent("colliderListener").boxItem = null;//---初始化碰撞点上的格子对象
-				
-		    	/*if (heroRouteOkList.list.length != 0) {
-					let heroList = self.hero_list;
-					for (let j = 0; j < heroList.length; j++) {//---------匹配英雄表
-						if(self.hero_list[j].heroName == selfItem.name){//--------------找出赋值英雄移动数组
-							self.hero_list[j].state = 10;//------------------------------------英雄状态切换为：移动
-							self.hero_list[j].route = heroRouteOkList.list;//------------------赋值路线
-							self.hero_list[j].indexNum = 0;//----------------------------------初始化移动路线的到达位置
-							heroRouteOkList.list = [];//---------------------------临时路线清空
-							heroRouteOkList.state = 0;//---------------------------临时路线状态改为不启用
-							heroRouteOkList.name = null;//-------------------------临时路线的英雄名清除
-							heroRouteOkList.lastId = -1;
-						}
-					}
-				}*/
 			});
 			this.other.getChildByName("hero_" + point).on(cc.Node.EventType.TOUCH_MOVE, function ( event ) {
 				let selfItem = this;
@@ -482,19 +448,27 @@ cc.Class({
 					heroList[j].y = targetBoxItem.getComponent("batBox_basic").y;//----------------------------------------英雄当前y轴修改
 					js_dataControl.updateHeroList(heroList);//----------------更新存储数据层js的英雄详细数组
 					if (heroList[j].route[heroList[j].indexNum-1]) {//清除当前移动对象上一步格子里的标识
+						var oldItem = self.batBox.getChildByName("batBox_y" + heroList[j].route[heroList[j].indexNum-1].y + "_x" + heroList[j].route[heroList[j].indexNum-1].x).getComponent("batBox_basic");
 						//console.log(self.batBox.getChildByName("batBox_y" + heroList[j].route[heroList[j].indexNum-1].y + "_x" + heroList[j].route[heroList[j].indexNum-1].x).getComponent("batBox_basic").bat_hero);
-						self.batBox.getChildByName("batBox_y" + heroList[j].route[heroList[j].indexNum-1].y + "_x" + heroList[j].route[heroList[j].indexNum-1].x).getComponent("batBox_basic").bat_hero = {point:null,groupId:null};
+						//console.log(oldItem.bat_hero,heroList[j].point);
+						if(oldItem.bat_hero.point == heroList[j].point){//如果上一个格子上的英雄point和现在移动的英雄point相同
+							oldItem.bat_hero = {point:null,groupId:null};
+						}
+						//console.log(oldItem.bat_hero);
 						//console.log(self.batBox.getChildByName("batBox_y" + heroList[j].route[heroList[j].indexNum-1].y + "_x" + heroList[j].route[heroList[j].indexNum-1].x).getComponent("batBox_basic").bat_hero);
 					}
 					//console.log(targetBoxItem.getComponent("batBox_basic"));
 					
 					//targetBoxItem.getComponent("batBox_basic").bat_hero.point = heroList[j].point;//------更改第一层战场格子上的英雄标记
-					targetBoxItem.getComponent("batBox_basic").bat_hero = {
-						point:		heroList[j].point,//------更改第一层战场格子上的英雄标记
-						groupId:	heroList[j].groupId
+					//console.log(targetBoxItem.getComponent("batBox_basic").bat_hero.point);
+					if(!targetBoxItem.getComponent("batBox_basic").bat_hero.point){//当前格子上没有英雄，才会把当前移动的英雄记录在该格子上
+						targetBoxItem.getComponent("batBox_basic").bat_hero = {
+							point:		heroList[j].point,//------更改第一层战场格子上的英雄标记
+							groupId:	heroList[j].groupId
+						}
 					}
 					//console.log(heroList[j].groupId,self.batBox.getChildByName("batBox_y" + heroList[j].route[heroList[j].indexNum].y + "_x" + heroList[j].route[heroList[j].indexNum].x).getComponent("batBox_basic").bat_hero );
-					/*if(heroList[j].route[heroList[j].indexNum+1] && self.batBox.getChildByName("batBox_y" + heroList[j].route[heroList[j].indexNum+1].y + "_x" + heroList[j].route[heroList[j].indexNum+1].x).getComponent("batBox_basic").bat_hero.groupId == 2){
+					if(heroList[j].route[heroList[j].indexNum+1] && self.batBox.getChildByName("batBox_y" + heroList[j].route[heroList[j].indexNum+1].y + "_x" + heroList[j].route[heroList[j].indexNum+1].x).getComponent("batBox_basic").bat_hero.groupId == 2){
 						for (var i = 0; i < heroList.length; i++) {
 							if(heroList[i].point == heroList[j].lockTarget.point && heroList[i].groupId == heroList[j].lockTarget.groupId){
 								var endTarget = self.batBox.getChildByName("batBox_y" + heroList[i].y + "_x" + heroList[i].x).getComponent("batBox_basic");
@@ -510,7 +484,8 @@ cc.Class({
 						});
 						console.log(checkRoute);
 						heroList[j].route = checkRoute;
-					}*/
+						heroList[j].indexNum = 0;
+					}
 					//英雄路线移动完毕后执行以下方法
 					if ((heroList[j].indexNum+1) == heroList[j].route.length) {
 						heroList[j].state = 10;
