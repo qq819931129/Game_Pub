@@ -7,12 +7,14 @@ module.exports.getAttPos_list = function(data,type){
 	[{y:0,x:2},{y:-1,x:1},{y:-2,x:0},{y:-1,x:-1},{y:0,x:-2},{y:1,x:-1},{y:2,x:0},{y:1,x:1}],
 	[{y:0,x:3},{y:-1,x:2},{y:-2,x:1},{y:-3,x:0},{y:-2,x:-1},{y:-1,x:-2},{y:0,x:-3},{y:1,x:-2},{y:2,x:-1},{y:3,x:0},{y:2,x:1},{y:1,x:2}]
 	];
-	if(data.heroItem.atkRangedDistMin == data.heroItem.atkRangedDistMax){
-		var atkRangedMin = data.heroItem.atkRangedDistMin - 1;
-	}else{
-		var atkRangedMin = data.heroItem.atkRangedDistMin;
+	if(data.heroItem.atkType == 3){//--直角类型处理，后续再加
+		let attMaxList = module.exports.getAtkRangedMax(data.heroItem);
+		//var atkRangedMax = 
 	}
-	for (let i = 0; i < data.heroItem.atkRangedDistMax; i++) {//data.heroItem.
+	
+	//获取公式上的远程攻击最小距离
+	var atkRangedMin = data.heroItem.atkRangedDistMin == data.heroItem.atkRangedDistMax ? data.heroItem.atkRangedDistMin - 1 : data.heroItem.atkRangedDistMin;
+	for (let i = 0; i < data.heroItem.atkRangedDistMax; i++) {
 		if(i == 0 || i >= atkRangedMin){
 			if(type == 1){
 				//获取原点目标在最终目标   最近的可攻击的格子位置
@@ -33,6 +35,10 @@ module.exports.getAttPos_list = function(data,type){
 	}
 	return attPos_list;
 }
+//获取直线攻击最远各方向格子
+module.exports.getAtkRangedMax = function(target){
+	
+}
 //获取原点目标在最终目标 最近的可攻击的格子位置  data数组---看A*算法注释
 module.exports.getAttPos = function(data){
 	let attPos_list = module.exports.getAttPos_list(data,1);
@@ -41,12 +47,10 @@ module.exports.getAttPos = function(data){
 		let tempCheckTarget = data.batBox.getChildByName("batBox_y" + (attPos_list[i].y) + "_x" + (attPos_list[i].x));
 		if (tempCheckTarget) {//----------是否存在格子
 			var checkTarget = tempCheckTarget.getComponent("batBox_basic");
-			console.log(checkTarget,checkTarget.bat_obstacle,!checkTarget.bat_hero.point);
 			if(checkTarget.bat_obstacle){//--------------------------当前循环九宫格格子是障碍物
 				continue;
 			}
 			if (!checkTarget.bat_hero.point) {//---------------------当前循环九宫格格子是英雄
-				//console.log(checkTarget);
 				return checkTarget;
 			}
 		}
@@ -83,13 +87,11 @@ module.exports.getRangeEnemy = function(data){
 			minF = tempList[i];
 		}
 	}
-	console.log(data,attPos_list,minF);
-	//var send = data.batBox.getChildByName("batBox_y" + minF.y + "_x" + minF.x).getComponent("batBox_basic");
 	for (var i = 0; i < attPos_list.length; i++) {
 		if(attPos_list[i].y == minF.y && attPos_list[i].x == minF.x){
 			for (var j = 0; j < data.hero_list.length; j++) {
 				if(data.hero_list[j].y == minF.y && data.hero_list[j].x == minF.x){
-					return data.hero_list[j];
+					return [data.hero_list[j]];
 				}
 			}
 		}
@@ -122,20 +124,11 @@ module.exports.routeDirection = function(data){
 	if(!tempEndTarget){//如没有获取到敌人目标，就读取传参进来的最终目标
 		tempEndTarget = data.batBox.getChildByName("batBox_y" + data.endTarget.y + "_x" + data.endTarget.x).getComponent("batBox_basic");
 	}
-	//console.log(tempEndTarget);
 	if (data.startTarget.x == tempEndTarget.x && data.startTarget.y == tempEndTarget.y) {  return false; }//---第二次检测，起点和终点一样就退出方法，因为可能上面的处理结果会把最终位置改变为路线起点
 	for (let j = 0; j < openList.length; j++) {
 		if (isSure_start == 1) { break; }//----------已到达终点，退出循环
 		let obsExList = [];//--------------障碍物上下左右格子的数组
-		let obsId_right = null;//----------当前障碍物格子的右侧格子--临时禁止加入临时数组
-		let obsId_down = null;//-----------当前障碍物格子的下侧格子--临时禁止加入临时数组
-		let obsId_left = null;//-----------当前障碍物格子的左侧格子--临时禁止加入临时数组
-		let obsId_top = null;//------------当前障碍物格子的上侧格子--临时禁止加入临时数组
-    	var tempEnemyList = [];
-		let enemId_right = null;//----------当前敌人格子的右侧格子--临时禁止加入临时数组
-		let enemId_down = null;//-----------当前敌人格子的下侧格子--临时禁止加入临时数组
-		let enemId_left = null;//-----------当前敌人格子的左侧格子--临时禁止加入临时数组
-		let enemId_top = null;//------------当前敌人格子的上侧格子--临时禁止加入临时数组
+    	var tempEnemyList = [];//----------敌人上下左右格子的数组
 		for (let i = 0; i < directionList.length; i++) {//------------------获取路线障碍物上下左右格子的数组
 			//计算出九宫格内当前循环的格子是否在战场内  原理：利用格子的行列值进行运算，得出结果异常则不属于战场内格子
     		let tempCheckTarget = data.batBox.getChildByName("batBox_y" + (parent.y + directionList[i].y) + "_x" + (parent.x + directionList[i].x));
@@ -143,10 +136,11 @@ module.exports.routeDirection = function(data){
 				var checkTarget = tempCheckTarget.getComponent("batBox_basic");
     			if (checkTarget.bat_obstacle) {//---------------------当前循环九宫格格子是障碍物
     				if (i == 0 || i == 2 || i == 4 || i == 6) {
-    					obsId_right = {y:(checkTarget.y + directionList[0].y),x:(checkTarget.x + directionList[0].x)};
-    					obsId_down = {y:(checkTarget.y + directionList[2].y),x:(checkTarget.x + directionList[2].x)};
-    					obsId_left = {y:(checkTarget.y + directionList[4].y),x:(checkTarget.x + directionList[4].x)};
-    					obsId_top = {y:(checkTarget.y + directionList[6].y),x:(checkTarget.x + directionList[6].x)};
+    					//----------当前障碍物格子的各方向格子--临时禁止加入临时数组
+    					let obsId_right = {y:(checkTarget.y + directionList[0].y),x:(checkTarget.x + directionList[0].x)};
+    					let obsId_down = {y:(checkTarget.y + directionList[2].y),x:(checkTarget.x + directionList[2].x)};
+    					let obsId_left = {y:(checkTarget.y + directionList[4].y),x:(checkTarget.x + directionList[4].x)};
+    					let obsId_top = {y:(checkTarget.y + directionList[6].y),x:(checkTarget.x + directionList[6].x)};
     					obsExList.push(obsId_right,obsId_down,obsId_left,obsId_top);
     				}
     			}
@@ -156,12 +150,13 @@ module.exports.routeDirection = function(data){
     					enemyList2.push(data.hero_list[z]);
     				}
     			}
-    			if (enemyList2) {
+    			if (enemyList2 != "") {
     				if (i == 0 || i == 2 || i == 4 || i == 6) {
-    					enemId_right = {y:(checkTarget.y + directionList[0].y),x:(checkTarget.x + directionList[0].x)};
-    					enemId_down = {y:(checkTarget.y + directionList[2].y),x:(checkTarget.x + directionList[2].x)};
-    					enemId_left = {y:(checkTarget.y + directionList[4].y),x:(checkTarget.x + directionList[4].x)};
-    					enemId_top = {y:(checkTarget.y + directionList[6].y),x:(checkTarget.x + directionList[6].x)};
+					//----------当前敌人格子的各方向格子--临时禁止加入临时数组
+    					let enemId_right = {y:(checkTarget.y + directionList[0].y),x:(checkTarget.x + directionList[0].x)};
+    					let enemId_down = {y:(checkTarget.y + directionList[2].y),x:(checkTarget.x + directionList[2].x)};
+    					let enemId_left = {y:(checkTarget.y + directionList[4].y),x:(checkTarget.x + directionList[4].x)};
+    					let enemId_top = {y:(checkTarget.y + directionList[6].y),x:(checkTarget.x + directionList[6].x)};
     					tempEnemyList.push(enemId_right,enemId_down,enemId_left,enemId_top);
     				}
     			}
@@ -172,7 +167,7 @@ module.exports.routeDirection = function(data){
     		let isClose = 0;//-----------------是否已记录在确认数组标识   0：不是   1：是
     		let isObstacle = 0;//--------------是否障碍物   0：不是   1：是
     		let isObsEx = 0;//-----------------当前格子是否位于障碍物格子上下左右侧的格子位置上，用于判断是否处于斜格处理   0：不是   1：是
-    		var isEnemy = false;
+    		var isEnemy = false;//-------------当前格子是否位于敌人格子上下左右侧的格子位置上，用于判断是否处于斜格处理   false：不是   true：是
     		var isEnemy2 = 0;
     		//计算出九宫格内当前循环的格子  原理：利用格子的行列值进行运算，得出结果异常则不属于战场内格子
     		let tempCheckTarget = data.batBox.getChildByName("batBox_y" + (parent.y + directionList[i].y) + "_x" + (parent.x + directionList[i].x));
@@ -207,12 +202,12 @@ module.exports.routeDirection = function(data){
 	    					break;
 	    				}
     				}
-	    			/*for (let o = 0; o < tempEnemyList.length; o++) {//------------------当前循环九宫格格子是否位于障碍物格子上下左右侧的格子位置上，是的话就不能纳入赋值ghf处理
+	    			for (let o = 0; o < tempEnemyList.length; o++) {//------------------当前循环九宫格格子是否位于敌人格子上下左右侧的格子位置上，是的话就不能纳入赋值ghf处理
     					if (checkTarget.x == tempEnemyList[o].x && checkTarget.y == tempEnemyList[o].y) {
 	    					isEnemy2 = 1;
 	    					break;
 	    				}
-    				}*/
+    				}
     			}
     			if (isClose == 0 && isOpen == 0 && isObstacle == 0 && isObsEx == 0 && !isEnemy && isEnemy2 == 0) {//-------------如任何检查判断为未触发，则视为当前格子是新处理格子
 					let H_x = Math.abs(tempEndTarget.x - checkTarget.x);
@@ -269,7 +264,6 @@ module.exports.routeDirection = function(data){
 			isSure_start = 1;
 		}
 	}
-	//console.log(closeList);
 	for (let j = 0; j < closeList.length; j++) {
 		data.batBox.getChildByName("batBox_y" + closeList[j].y + "_x" + closeList[j].x).setColor(cc.color("#008102"));//-----测试阶段，上颜色标识用
 	}
@@ -279,17 +273,9 @@ module.exports.routeDirection = function(data){
 	for (let j = 0; j < closeList.length; j++) {
 		if (isSure_end == 1) { break; }//----------已回到起点，退出循环
 		let obsExList = [];//--------------障碍物上下左右格子的数组
-		let obsId_right = null;//----------当前障碍物格子的右侧格子--临时禁止加入临时数组
-		let obsId_down = null;//-----------当前障碍物格子的下侧格子--临时禁止加入临时数组
-		let obsId_left = null;//-----------当前障碍物格子的左侧格子--临时禁止加入临时数组
-		let obsId_top = null;//------------当前障碍物格子的上侧格子--临时禁止加入临时数组
+		let obsId_right = null;
 		let tempSureList = [];
-		
     	var tempEnemyList = [];
-		let enemId_right = null;//----------当前敌人格子的右侧格子--临时禁止加入临时数组
-		let enemId_down = null;//-----------当前敌人格子的下侧格子--临时禁止加入临时数组
-		let enemId_left = null;//-----------当前敌人格子的左侧格子--临时禁止加入临时数组
-		let enemId_top = null;//------------当前敌人格子的上侧格子--临时禁止加入临时数组
 		for (let i = 0; i < directionList.length; i++) {
 			//获取当前循环的父节点格子  
     		let tempCheckTarget = data.batBox.getChildByName("batBox_y" + (parent.y + directionList[i].y) + "_x" + (parent.x + directionList[i].x));
@@ -297,10 +283,11 @@ module.exports.routeDirection = function(data){
 				var checkTarget = tempCheckTarget.getComponent("batBox_basic");
     			if (checkTarget.bat_obstacle) {//---------------------当前循环九宫格格子是障碍物
     				if (i == 0 || i == 2 || i == 4 || i == 6) {
-    					obsId_right = {y:(checkTarget.y + directionList[0].y),x:(checkTarget.x + directionList[0].x)};
-    					obsId_down = {y:(checkTarget.y + directionList[2].y),x:(checkTarget.x + directionList[2].x)};
-    					obsId_left = {y:(checkTarget.y + directionList[4].y),x:(checkTarget.x + directionList[4].x)};
-    					obsId_top = {y:(checkTarget.y + directionList[6].y),x:(checkTarget.x + directionList[6].x)};
+    					//----------当前障碍物格子的各方向格子--临时禁止加入临时数组
+    					let obsId_right = {y:(checkTarget.y + directionList[0].y),x:(checkTarget.x + directionList[0].x)};
+    					let obsId_down = {y:(checkTarget.y + directionList[2].y),x:(checkTarget.x + directionList[2].x)};
+    					let obsId_left = {y:(checkTarget.y + directionList[4].y),x:(checkTarget.x + directionList[4].x)};
+    					let obsId_top = {y:(checkTarget.y + directionList[6].y),x:(checkTarget.x + directionList[6].x)};
     					obsExList.push(obsId_right,obsId_down,obsId_left,obsId_top);
     				}
     			}
@@ -308,17 +295,16 @@ module.exports.routeDirection = function(data){
 			var enemyList2 = [];
 			for (var z = 0; z < data.hero_list.length; z++) {
 				if(data.hero_list[z].point == checkTarget.bat_hero.point && data.hero_list[z].groupId == 2){
-					console.log(data.hero_list[z].point , checkTarget.bat_hero.point , data.hero_list[z].groupId == 2);
 					enemyList2.push(data.hero_list[z]);
-					console.log(enemyList2);
 				}
 			}
-			if (enemyList2) {
+			if (enemyList2 != "") {
 				if (i == 0 || i == 2 || i == 4 || i == 6) {
-					enemId_right = {y:(checkTarget.y + directionList[0].y),x:(checkTarget.x + directionList[0].x)};
-					enemId_down = {y:(checkTarget.y + directionList[2].y),x:(checkTarget.x + directionList[2].x)};
-					enemId_left = {y:(checkTarget.y + directionList[4].y),x:(checkTarget.x + directionList[4].x)};
-					enemId_top = {y:(checkTarget.y + directionList[6].y),x:(checkTarget.x + directionList[6].x)};
+					//----------当前敌人格子的各方向格子--临时禁止加入临时数组
+					let enemId_right = {y:(checkTarget.y + directionList[0].y),x:(checkTarget.x + directionList[0].x)};
+					let enemId_down = {y:(checkTarget.y + directionList[2].y),x:(checkTarget.x + directionList[2].x)};
+					let enemId_left = {y:(checkTarget.y + directionList[4].y),x:(checkTarget.x + directionList[4].x)};
+					let enemId_top = {y:(checkTarget.y + directionList[6].y),x:(checkTarget.x + directionList[6].x)};
 					tempEnemyList.push(enemId_right,enemId_down,enemId_left,enemId_top);
 				}
 			}
@@ -332,32 +318,25 @@ module.exports.routeDirection = function(data){
 			let tempCheckTarget = data.batBox.getChildByName("batBox_y" + (parent.y + directionList[i].y) + "_x" + (parent.x + directionList[i].x));
     		if (tempCheckTarget) {//----------是否存在格子
     			var checkTarget = tempCheckTarget.getComponent("batBox_basic");
-    			/*if (checkTarget.bat_obstacle) {//---------------------当前循环九宫格格子是障碍物
-    				isObstacle = 1;
-    			}else if(enemyList2.length != 0){
-    				console.log(6666);
-    				isEnemy = true;
-    			}else{*/
-    				for (let x = 0; x < closeList.length; x++) {//------------------当前循环九宫格格子是否已记录在确认数组
-		    			if (checkTarget.x == closeList[x].x && checkTarget.y == closeList[x].y) {
-		    				for (let o = 0; o < obsExList.length; o++) {//------------------当前循环九宫格格子是否位于障碍物格子上下左右侧的格子位置上，是的话就不能纳入赋值ghf处理
-		    					if (checkTarget.x == obsExList[o].x && checkTarget.y == obsExList[o].y) {
-			    					isObsEx = 1;
-			    					break;
-			    				}
+				for (let x = 0; x < closeList.length; x++) {//------------------当前循环九宫格格子是否已记录在确认数组
+	    			if (checkTarget.x == closeList[x].x && checkTarget.y == closeList[x].y) {
+	    				for (let o = 0; o < obsExList.length; o++) {//------------------当前循环九宫格格子是否位于障碍物格子上下左右侧的格子位置上，是的话就不能纳入赋值ghf处理
+	    					if (checkTarget.x == obsExList[o].x && checkTarget.y == obsExList[o].y) {
+		    					isObsEx = 1;
+		    					break;
 		    				}
-			    			/*for (let o = 0; o < tempEnemyList.length; o++) {//------------------当前循环九宫格格子是否位于障碍物格子上下左右侧的格子位置上，是的话就不能纳入赋值ghf处理
-		    					if (checkTarget.x == tempEnemyList[o].x && checkTarget.y == tempEnemyList[o].y) {
-			    					isEnemy2 = 1;
-			    					break;
-			    				}
-		    				}*/
-		    				if (isObsEx == 0) {
-		    					tempSureList.push(closeList[x]);
+	    				}
+		    			for (let o = 0; o < tempEnemyList.length; o++) {//------------------当前循环九宫格格子是否位于敌人格子上下左右侧的格子位置上，是的话就不能纳入赋值ghf处理
+	    					if (checkTarget.x == tempEnemyList[o].x && checkTarget.y == tempEnemyList[o].y) {
+		    					isEnemy2 = 1;
+		    					break;
 		    				}
-		    			}
-		    		}
-    			//}
+	    				}
+	    				if (isObsEx == 0 && isEnemy2 == 0) {
+	    					tempSureList.push(closeList[x]);
+	    				}
+	    			}
+	    		}
     		}
 		}
 		console.log(tempSureList);
