@@ -129,8 +129,8 @@ cc.Class({
                         let boxId = `${temp.y}${temp.x}`;
                         //cc.log(boxId);
                         if(grid == boxId){
-                            canAtkTreget[temp.boxId] = temp;
-                            gridList.push(temp.boxId);
+                            canAtkTreget[boxId] = temp;
+                            gridList.push(boxId);
                         }
                     }
                 }
@@ -144,10 +144,7 @@ cc.Class({
                     }
                 }
             }
-            let atkTarget = canAtkTreget[gridList[0]];
-            if(atkTarget && atkTarget instanceof Object){
-                return atkTarget.heroName;
-            }
+            return canAtkTreget[gridList[0]];
         }
     },
     /**

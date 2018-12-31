@@ -71,7 +71,7 @@ cc.Class({
                 if(atkTargetName && atkTargetName != ''){
                     cc.log(atkTargetName);
                     this.atkTarget = this.enemyNode.getChildByName(atkTargetName);
-                    if(typeof this.atkTarget == 'object' && this.atkTarget.uuid != undefined){
+                    if(this.atkTarget && typeof this.atkTarget == 'object' && this.atkTarget.uuid != undefined){
                         this.bodyComp.playAttack();
                     }
                 }

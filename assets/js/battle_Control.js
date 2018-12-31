@@ -196,7 +196,7 @@ cc.Class({
     	//console.log(this.batlist,this.batBox.getChildByName("batBox_y" + 0 + "_x" + 2).getComponent("batBox_basic"));
     	
     	js_dataControl.updateHeroList(this.hero_list);
-    	console.log(js_dataControl.room());
+		// console.log(js_dataControl.room());
 		var heroRouteOkList = this.hero_route_ok_list;
     	this.background.getChildByName("stopAllMove").on(cc.Node.EventType.TOUCH_START, function ( event ) {
 			let selfItem = this;
@@ -305,11 +305,13 @@ cc.Class({
     	if (point == 10) { var item = this.perfabPool.createEnemy(); }
 		if (point == 11) { var item = this.perfabPool.createEnemy(); }
 		if(groupId == 1){
-			item.getComponent('person').group = GroupName.other
+			item.getComponent('person').group = GroupName.other;
+			item.group = GroupName.other;
 			this.other.addChild(item);
 		}
 		if(groupId == 2){
 			item.getComponent('person').group = GroupName.empty;
+			item.group = GroupName.empty;
 			this.enemy.addChild(item);
 		}
 		var x = this.batBox.getChildByName("batBox_y" + box.y + "_x" + box.x).x;
