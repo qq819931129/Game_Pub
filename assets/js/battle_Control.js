@@ -117,14 +117,13 @@ cc.Class({
 	        	}
     		}
     	}
-    	console.log(this.obstacle_list);
     	js_dataControl.setObstacle(this.obstacle_list);
     	this.battleInit_hero(this.checkId,personPrefabNew);
     },
     //生成第三层战场数组-英雄   (关卡id)
     battleInit_hero: function(checkId,personPrefabNew){
-    	let tempList = [{y: 4,x: 2,point: 6},{y: 3,x: 0,point: 7},{y: 2,x: 2,point: 8},{y: 1,x: 2,point: 9},{y: 0,x: 2,point: 10},{y: 4,x: 1,point: 11}];//----我方阵容-测试用的
-		//let tempList = [{y: 4,x: 2,point: 6}];
+    	//let tempList = [/*{y: 4,x: 2,point: 6},{y: 3,x: 2,point: 7},{y: 2,x: 2,point: 8},{y: 1,x: 2,point: 9},{y: 0,x: 2,point: 10},{y: 4,x: 1,point: 11}*/];//----我方阵容-测试用的
+		let tempList = [{y: 4,x: 2,point: 6}];
 		let otherList = [];//-----------------------我方阵容
     	let otherList_lock_id = 0;//----------------我方阵容——位置是否有重复英雄导入标识  0:是，1:不是
     	let otherList_lock_point = 0;//-------------我方阵容——不同年龄系列英雄是否重复导入标识  0:是，1:不是
@@ -132,7 +131,7 @@ cc.Class({
     	//let fulinList = [{id: "01",point: 1},{id: "02",point: 2},{id: "03",point: 3}];//------符灵技能栏
     	if (checkId == 1) {
 			//var enemyList = [{y: 4,x: 9,point: 1},{y: 2,x: 9,point: 2},{y: 0,x: 9,point: 3},{y: 3,x: 7,point: 4},{y: 1,x: 7,point: 5}];//----敌方阵容
-			var enemyList = [{y: 3,x: 9,point: 1}];
+			var enemyList = [{y: 3,x: 7,point: 1}];
     	}
     	if (checkId == 2) {
     		var enemyList = [{y: 3,x: 9,point: 1},{y: 1,x: 9,point: 2},{y: 0,x: 9,point: 3},{y: 0,x: 7,point: 4},{y: 1,x: 7,point: 5}];//----敌方阵容
@@ -196,7 +195,6 @@ cc.Class({
     	//console.log(this.batlist,this.batBox.getChildByName("batBox_y" + 0 + "_x" + 2).getComponent("batBox_basic"));
     	
     	js_dataControl.updateHeroList(this.hero_list);
-		// console.log(js_dataControl.room());
 		var heroRouteOkList = this.hero_route_ok_list;
     	this.background.getChildByName("stopAllMove").on(cc.Node.EventType.TOUCH_START, function ( event ) {
 			let selfItem = this;
@@ -242,6 +240,21 @@ cc.Class({
 			}
 			
 		});
+		
+    	this.battleInit_fog(this.checkId);
+   },
+    //生成第四层战场数组-迷雾   (关卡id)
+    battleInit_fog: function(checkId){
+    	//关卡序列
+    	if (checkId == 1) {
+    		var otherList = [{y: 0,x: 0,point: 1},{y: 1,x: 0,point: 2},{y: 2,x: 0,point: 3},{y: 3,x: 0,point: 1},{y: 4,x: 0,point: 1}];
+    	}
+    	if (checkId == 2) {
+    		var otherList = [{y: 0,x: 4,point: 1},{y: 2,x: 4,point: 2},{y: 1,x: 4,point: 3}];
+    	}
+    	this.fogList = otherList;
+    	
+		
     },
     stopMove:function (point) {
     	var self = this;
@@ -305,13 +318,11 @@ cc.Class({
     	if (point == 10) { var item = this.perfabPool.createEnemy(); }
 		if (point == 11) { var item = this.perfabPool.createEnemy(); }
 		if(groupId == 1){
-			item.getComponent('person').group = GroupName.other;
-			item.group = GroupName.other;
+			item.getComponent('person').group = GroupName.other
 			this.other.addChild(item);
 		}
 		if(groupId == 2){
 			item.getComponent('person').group = GroupName.empty;
-			item.group = GroupName.empty;
 			this.enemy.addChild(item);
 		}
 		var x = this.batBox.getChildByName("batBox_y" + box.y + "_x" + box.x).x;
@@ -435,7 +446,7 @@ cc.Class({
     	let self = this;
 		let heroList = self.hero_list;
 		for (let j = 0; j < heroList.length; j++) {//---------匹配英雄表
-			if(heroList[j].state == 11){//--------------找出赋值英雄移动数组
+			if(heroList[j].state == 11){//--------------状态为移动的英雄处理
 				let targetBoxItem = self.batBox.getChildByName("batBox_y" + heroList[j].route[heroList[j].indexNum].y + "_x" + heroList[j].route[heroList[j].indexNum].x);
 				let end = cc.v2(targetBoxItem.x,targetBoxItem.y);//------------------------获取下个目标xy
 				if(heroList[j].groupId == 1){ var start = self.other.getChildByName(heroList[j].heroName).position;}//-------------获取目标当前xy 
@@ -451,25 +462,16 @@ cc.Class({
 					js_dataControl.updateHeroList(heroList);//----------------更新存储数据层js的英雄详细数组
 					if (heroList[j].route[heroList[j].indexNum-1]) {//清除当前移动对象上一步格子里的标识
 						var oldItem = self.batBox.getChildByName("batBox_y" + heroList[j].route[heroList[j].indexNum-1].y + "_x" + heroList[j].route[heroList[j].indexNum-1].x).getComponent("batBox_basic");
-						//console.log(self.batBox.getChildByName("batBox_y" + heroList[j].route[heroList[j].indexNum-1].y + "_x" + heroList[j].route[heroList[j].indexNum-1].x).getComponent("batBox_basic").bat_hero);
-						//console.log(oldItem.bat_hero,heroList[j].point);
 						if(oldItem.bat_hero.point == heroList[j].point){//如果上一个格子上的英雄point和现在移动的英雄point相同
 							oldItem.bat_hero = {point:null,groupId:null};
 						}
-						//console.log(oldItem.bat_hero);
-						//console.log(self.batBox.getChildByName("batBox_y" + heroList[j].route[heroList[j].indexNum-1].y + "_x" + heroList[j].route[heroList[j].indexNum-1].x).getComponent("batBox_basic").bat_hero);
 					}
-					//console.log(targetBoxItem.getComponent("batBox_basic"));
-					
-					//targetBoxItem.getComponent("batBox_basic").bat_hero.point = heroList[j].point;//------更改第一层战场格子上的英雄标记
-					//console.log(targetBoxItem.getComponent("batBox_basic").bat_hero.point);
 					if(!targetBoxItem.getComponent("batBox_basic").bat_hero.point){//当前格子上没有英雄，才会把当前移动的英雄记录在该格子上
 						targetBoxItem.getComponent("batBox_basic").bat_hero = {
 							point:		heroList[j].point,//------更改第一层战场格子上的英雄标记
 							groupId:	heroList[j].groupId
 						}
 					}
-					//console.log(heroList[j].groupId,self.batBox.getChildByName("batBox_y" + heroList[j].route[heroList[j].indexNum].y + "_x" + heroList[j].route[heroList[j].indexNum].x).getComponent("batBox_basic").bat_hero );
 					if(heroList[j].route[heroList[j].indexNum+1] && self.batBox.getChildByName("batBox_y" + heroList[j].route[heroList[j].indexNum+1].y + "_x" + heroList[j].route[heroList[j].indexNum+1].x).getComponent("batBox_basic").bat_hero.groupId == 2){
 						for (var i = 0; i < heroList.length; i++) {
 							if(heroList[i].point == heroList[j].lockTarget.point && heroList[i].groupId == heroList[j].lockTarget.groupId){
@@ -493,11 +495,38 @@ cc.Class({
 						heroList[j].state = 10;
 					}
 					heroList[j].indexNum++;
-					/*if(self.batBox.getChildByName("batBox_y" + heroList[j].route[heroList[j].indexNum].y + "_x" + heroList[j].route[heroList[j].indexNum].x).getComponent("batBox_basic").bat_hero.groupId == 1){
-						//---获取A*填充数组，条件是当前确认数组最后一个格子对象和最新所选到的格子对象，用作处理可能越几格的路线填充
-						let checkRoute = this.routeDirection(targetBoxItem,boxItem);
-						console.log(222222,checkRoute);
-					}*/
+					
+					//迷雾刷新
+//					let fogList = self.fogList;
+//					let fogTempList_first = [];
+//					fogTempList_first.push.apply(fogTempList_first,fogList);
+//					for (let x = 0; x < heroList.length; x++) {
+//						let directionList = [{y:0,x:1,direction:1},{y:-1,x:1,direction:2},{y:-1,x:0,direction:3},{y:-1,x:-1,direction:4},{y:0,x:-1,direction:5},{y:1,x:-1,direction:6},{y:1,x:0,direction:7},{y:1,x:1,direction:8}];
+//						for (let i = 0; i < directionList.length; i++) {
+//							let tempItem = {x:heroList[x].x + directionList[i].x, y:heroList[x].y + directionList[i].y};
+//							let fogTempList_second = [];
+//							for (let z = 0; z < fogList.length; z++) {
+//								if(fogList[z].x != tempItem.x && fogList[z].y != tempItem.y){
+//									fogTempList_second.push(tempItem);
+//									break;
+//								}
+//							}
+//							fogTempList_first.push.apply(fogTempList_first,fogTempList_second);
+//						}
+//					}
+//					
+//					cc.log(fogTempList_first)
+//					for (let x = 0; x < self.batlist.length; x++) {
+//						for (let i = 0; i < fogTempList_first.length; i++) {
+//							var batItem = self.batlist[x].getComponent("batBox_basic");
+//							if(fogTempList_first[i].x == batItem.x && fogTempList_first[i].y == batItem.y){
+//								batItem.bat_fog = {point:0};
+//							}else{
+//								batItem.bat_fog = {point:1};
+//							}
+//							
+//						}
+//					}
 				}
 			}
 		}
@@ -605,7 +634,6 @@ cc.Class({
 				console.log(noRepeatList,repeatList);
 			}
 		}
-		//console.log(heroRouteOkList.list);
     },
     
 });
