@@ -95,6 +95,7 @@ cc.Class({
 			batItem.bat_hero = {point:null,groupId:null};
 		}
 		//console.log(this.batlist);
+    	js_dataControl.updateBatBoxList(this.batBox);
         this.perfabPool = this.getComponent("prefabPool");
         this.perfabPool.init();
 		this.battleInit_obstacle(this.checkId,personPrefabNew);
@@ -195,6 +196,7 @@ cc.Class({
     	//console.log(this.batlist,this.batBox.getChildByName("batBox_y" + 0 + "_x" + 2).getComponent("batBox_basic"));
     	
     	js_dataControl.updateHeroList(this.hero_list);
+    	cc.log(js_dataControl.room())
 		var heroRouteOkList = this.hero_route_ok_list;
     	this.background.getChildByName("stopAllMove").on(cc.Node.EventType.TOUCH_START, function ( event ) {
 			let selfItem = this;

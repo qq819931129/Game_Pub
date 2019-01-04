@@ -6,6 +6,13 @@ module.exports.updateHeroList = function (target) {
 module.exports.getHeroList = function () {
     return this.heroList;
 };
+//战场详细数据存储
+module.exports.updateBatBoxList = function (target) {
+    this.batlist = target;
+};
+module.exports.getBatBoxList = function () {
+    return this.batlist;
+};
 module.exports.getHeroByName = function(name){
     try {
         if(this.heroList == undefined || this.heroList == null || this.heroList.length == 0){
@@ -45,6 +52,7 @@ module.exports.getObstacle = function(){
 module.exports.room = function(){
 	var item = {
 		heroList: this.heroList,
+		batlist: this.batlist,
 		checkId: this.checkId,
 		obstacle: this.obstacle,
 	}
