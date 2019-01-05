@@ -1,5 +1,6 @@
 //导入外部脚本
 var js_dataControl = require("dataControl");
+var js_algorithm_A = require("algorithm_A");
 const AttackType = require('Types').AttackType;
 cc.Class({
     extends: cc.Component,
@@ -63,41 +64,14 @@ cc.Class({
 
     // called every frame, uncomment this function to activate update callback
      update: function (dt) {
-        let hero_self = js_dataControl.getHeroByName(this.heroName);
-        if(this.atkTarget == null){
-            //寻敌
-            if(this.groupId == 1){
-                let atkTargetName = this.findAtkTarget.findNew(this.atkType, hero_self.y,hero_self.x,this.atkRangedDistMin,this.atkRangedDistMax);
-                if(atkTargetName && atkTargetName != ''){
-                    cc.log(atkTargetName);
-                    this.atkTarget = this.enemyNode.getChildByName(atkTargetName);
-                    if(this.atkTarget && typeof this.atkTarget == 'object' && this.atkTarget.uuid != undefined){
-                        this.bodyComp.playAttack();
-                    }
-                }
-            }
-        }else{
-            //检测目标是否还在攻击范围内
-            let inScope = this.findAtkTarget.checkTargetInGrids(this.atkType, this.atkTarget.name, hero_self.y, hero_self.x, this.atkRangedDistMin, this.atkRangedDistMax);
-            if(!inScope){
-                cc.log('清空攻击目标')
-                this.atkTarget = null;
-                this.bodyComp.playMove();
-            }else{
-                //cc.log(this.atkTarget.name);
-            }
-
-            // var dist = this.findAtkTarget.getTargetDistance(this.node.getPosition(), this.atkTarget);
-            // this.atkTargetDist = dist;
-            // if(this.atkDistMax < this.atkTargetDist){
-            //     //清空目标，等下一次执行update时再寻找目标
-            //     this.bodyComp.playMove();
-            //     this.atkTarget = null; 
-            // }else{    
-            //     //执行攻击动画
-            //     this.bodyComp.playAttack();
-            // }
-        }
+        // let aaa = js_algorithm_A.getRangeEnemy({
+        //     startTarget:	this,
+        //     //endTarget:		self.batBox.getChildByName("batBox_y" + 3 + "_x" + 7).getComponent("batBox_basic"),
+        //     batBox:			js_dataControl.batlist,
+        //     hero_list:		js_dataControl.getHeroList(),
+        //     heroItem:		this
+        // });
+        // console.log(aaa);
     },
 
     createFlyer:function(){
