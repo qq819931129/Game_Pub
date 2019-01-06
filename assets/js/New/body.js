@@ -26,7 +26,6 @@ cc.Class({
     },
     attackOver: function () {
         if (this.parentCopm.atkTarget == null 
-            || !this.parentCopm.atkTarget.activeInHierarchy 
             || this.parentCopm.atkTarget.die == 0) {
             return;
         }

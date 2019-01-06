@@ -36,7 +36,7 @@ cc.Class({
         var bezierTo = cc.bezierTo(1, bezier);
 
         var action = cc.sequence(bezierTo,cc.callFunc(function(){
-            this.node.active = false;
+            //this.node.active = false;
         },this))
 
         this.node.runAction(action);

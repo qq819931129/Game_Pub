@@ -40,11 +40,16 @@ cc.Class({
 		y		: null,		//英雄当前所处格子的y轴
 		point	: null,		//英雄标记  纪录具体是哪个英雄
 		route	: [],		//英雄移动路线   状态切换为移动时，赋值路线
-		state	: 10		//英雄状态   10：静止，11：移动
+        state	: 10,		//英雄状态   10：静止，11：移动
+        findAtkTargetOff:true,
+        init : false
     },
 
     // use this for initialization
     onLoad: function () {
+        this.myInit();
+    },
+    myInit:function(){
         this.findAtkTarget = this.getComponent('findAtkTarget');
         this.HPBar = this.getComponent('hpBarHelper');
         this.bodyComp = this.body.getComponent('body');
@@ -53,6 +58,12 @@ cc.Class({
         this.background = cc.find('/background'); //获取这个节点的作用是用于坐标转换
         this.bodyComp.init();
         this.bodyComp.playMove();
+        //定时寻敌
+        var self = this;
+        setTimeout(function(){
+            cc.log("启动定时寻敌");
+            setInterval(self.findAtkTargetInterval(self),1000)
+        },6000);
 
         //测试远程攻击
         this.atkType = AttackType.Range;//攻击类型
@@ -60,30 +71,59 @@ cc.Class({
         this.atkDistMax = 1;//最大攻击距离
         this.atkRangedDistMin = 3;//远程攻击最小距离
         this.atkRangedDistMax = 3;//远程攻击最大距离
-    },
 
+        this.init = true;//初始化完毕表示
+    },
     // called every frame, uncomment this function to activate update callback
      update: function (dt) {
-        // let aaa = js_algorithm_A.getRangeEnemy({
-        //     startTarget:	this,
-        //     //endTarget:		self.batBox.getChildByName("batBox_y" + 3 + "_x" + 7).getComponent("batBox_basic"),
-        //     batBox:			js_dataControl.batlist,
-        //     hero_list:		js_dataControl.getHeroList(),
-        //     heroItem:		this
-        // });
-        // console.log(aaa);
+         if(this.init == true){
+            if(this.atkTarget != null){
+                this.bodyComp.playAttack();
+             }else{
+                this.bodyComp.playMove();
+             }
+         }
     },
-
+    findAtkTargetInterval:function(self){
+        if(self.findAtkTargetOff == true){
+            let targets = js_algorithm_A.getRangeEnemy({
+                startTarget:	self,
+                //endTarget:		self.batBox.getChildByName("batBox_y" + 3 + "_x" + 7).getComponent("batBox_basic"),
+                batBox:			js_dataControl.batlist,
+                hero_list:		js_dataControl.getHeroList(),
+                heroItem:		self
+            });
+            if(targets != false && targets.length >= 0){
+                if(self.atkTarget == null){
+                    self.atkTarget = targets[0];
+                }else{
+                    var has = false;
+                    for (const one of targets) {
+                        if(one.name == self.atkTarget.name){
+                            has == true;
+                        }
+                    }
+                    if(!has){
+                        self.atkTarget = targets[0];
+                    }
+                }
+            }
+        }else{
+            cc.log("索敌未开启");
+        }
+    },
     createFlyer:function(){
         if(this.atkRangedDistMin && this.atkRangedDistMax){
             if(this.atkTarget != null){
                 var flyer = cc.instantiate(this.flyer);
                 flyer.group = this.group;
+                cc.log(this.group);
+                cc.log(this.atkTarget.group);
                 flyer.setPosition(cc.v2(0,0));
                 // flyer.setPosition(this.Canvas.convertToNodeSpace(flyer.getPosition()));
                 flyer.getComponent('flyerMove').damage = this.atkPoint;
                 flyer.getComponent('flyerMove').targetNode = this.atkTarget;
-                flyer.getComponent('flyerMove').targetDefPosition = this.atkTarget.getPosition();
+                flyer.getComponent('flyerMove').targetDefPosition = this.atkTarget.node.getPosition();
                 flyer.setLocalZOrder(10);
                 this.flyerList.addChild(flyer);
                 //flyer.getComponent('flyerMove').moveToPosition(this.atkTarget.getPosition());
