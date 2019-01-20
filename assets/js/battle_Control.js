@@ -99,6 +99,32 @@ cc.Class({
         this.perfabPool = this.getComponent("prefabPool");
         this.perfabPool.init();
 		this.battleInit_obstacle(this.checkId,personPrefabNew);
+		
+//      if(cc.sys.isNative) {
+//          cc.log("Path:"+jsb.fileUtils.getWritablePath());
+//          cc.log( jsb.fileUtils.writeToFile({"new":"value"},jsb.fileUtils.getWritablePath()+'data.json'));
+//          cc.log("writeStringToFile:"+jsb.fileUtils.writeStringToFile('{"a":"b","c":"d"}', jsb.fileUtils.getWritablePath()+'kk.json'));
+//
+//          cc.log("fullPathForFilename:"+jsb.fileUtils.fullPathForFilename("resources/data.json"));
+//      }
+//      cc.loader.load(cc.url.raw('resources/data.json'), function(err,res) {
+//          if (err) {
+//              cc.log(err);
+//          } else {
+//              let list = res;
+//              cc.log("load:");
+//              cc.log("list:" + list.name);
+//          }
+//      });
+//      cc.loader.load(jsb.fileUtils.getWritablePath()+"kk.json", function(err,res) {
+//          if (err) {
+//              cc.log(err);
+//          } else {
+//              let list = res;
+//
+//              cc.log("list:" + list.a);
+//          }
+//      });
     },
     //生成第二层战场数组-障碍物   (关卡id)
     battleInit_obstacle: function(checkId,personPrefabNew){
@@ -499,36 +525,40 @@ cc.Class({
 					heroList[j].indexNum++;
 					
 					//迷雾刷新
-//					let fogList = self.fogList;
-//					let fogTempList_first = [];
-//					fogTempList_first.push.apply(fogTempList_first,fogList);
-//					for (let x = 0; x < heroList.length; x++) {
-//						let directionList = [{y:0,x:1,direction:1},{y:-1,x:1,direction:2},{y:-1,x:0,direction:3},{y:-1,x:-1,direction:4},{y:0,x:-1,direction:5},{y:1,x:-1,direction:6},{y:1,x:0,direction:7},{y:1,x:1,direction:8}];
-//						for (let i = 0; i < directionList.length; i++) {
-//							let tempItem = {x:heroList[x].x + directionList[i].x, y:heroList[x].y + directionList[i].y};
-//							let fogTempList_second = [];
-//							for (let z = 0; z < fogList.length; z++) {
-//								if(fogList[z].x != tempItem.x && fogList[z].y != tempItem.y){
-//									fogTempList_second.push(tempItem);
-//									break;
-//								}
-//							}
-//							fogTempList_first.push.apply(fogTempList_first,fogTempList_second);
-//						}
-//					}
-//					
-//					cc.log(fogTempList_first)
-//					for (let x = 0; x < self.batlist.length; x++) {
-//						for (let i = 0; i < fogTempList_first.length; i++) {
-//							var batItem = self.batlist[x].getComponent("batBox_basic");
-//							if(fogTempList_first[i].x == batItem.x && fogTempList_first[i].y == batItem.y){
-//								batItem.bat_fog = {point:0};
-//							}else{
-//								batItem.bat_fog = {point:1};
-//							}
-//							
-//						}
-//					}
+					let fogList = self.fogList;
+					let fogTempList_first = [];
+					fogTempList_first.push.apply(fogTempList_first,fogList);
+					for (let x = 0; x < heroList.length; x++) {
+						let directionList = [{y:0,x:1,direction:1},{y:-1,x:1,direction:2},{y:-1,x:0,direction:3},{y:-1,x:-1,direction:4},{y:0,x:-1,direction:5},{y:1,x:-1,direction:6},{y:1,x:0,direction:7},{y:1,x:1,direction:8}];
+						for (let i = 0; i < directionList.length; i++) {
+							let tempItem = {y:heroList[x].y + directionList[i].y, x:heroList[x].x + directionList[i].x};
+							let fogTempList_second = [];
+							for (let z = 0; z < fogList.length; z++) {
+								if(fogList[z].x != tempItem.x && fogList[z].y != tempItem.y){
+									fogTempList_second.push(tempItem);
+									break;
+								}
+							}
+							fogTempList_first.push.apply(fogTempList_first,fogTempList_second);
+						}
+					}
+					
+					cc.log(fogTempList_first)
+					for (let x = 0; x < self.batlist.length; x++) {
+						for (let i = 0; i < fogTempList_first.length; i++) {
+							var batItem = self.batlist[x].getComponent("batBox_basic");
+							cc.log(i)
+							if(fogTempList_first[i].x == batItem.x && fogTempList_first[i].y == batItem.y){
+								self.batlist[x].bat_fog = {point:0};
+								batItem.bat_fog = {point:0};
+							}else{
+								self.batlist[x].bat_fog = {point:1};
+								batItem.bat_fog = {point:1};
+							}
+							break;
+						}
+					}
+					cc.log(self.batlist)
 				}
 			}
 		}
