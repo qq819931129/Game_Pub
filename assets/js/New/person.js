@@ -5,7 +5,7 @@ const AttackType = require('Types').AttackType;
 cc.Class({
     extends: cc.Component,
     properties: {
-        atkPoint: 10,//攻击力
+        atkPoint: 100,//攻击力
         speed: 1,//游戏速度
         atkType: AttackType.Melee,//攻击类型
         atkDist: null,//近身攻击距离
@@ -58,13 +58,7 @@ cc.Class({
         this.background = cc.find('/background'); //获取这个节点的作用是用于坐标转换
         this.bodyComp.init();
         this.bodyComp.playMove();
-        //定时寻敌
-        var self = this;
-        setTimeout(function(){
-            cc.log("启动定时寻敌");
-            setInterval(self.findAtkTargetInterval(self),1000)
-        },6000);
-
+        
         //测试远程攻击
         this.atkType = AttackType.Range;//攻击类型
         this.atkDist = 1;//近身攻击距离
@@ -73,11 +67,21 @@ cc.Class({
         this.atkRangedDistMax = 3;//远程攻击最大距离
 
         this.init = true;//初始化完毕表示
+
+        //定时寻敌
+        var self = this;
+        this.schedule(function(){
+            self.findAtkTargetInterval(self)
+        }, 0.5, 99999, 5);
     },
     // called every frame, uncomment this function to activate update callback
      update: function (dt) {
          if(this.init == true){
             if(this.atkTarget != null){
+                if(this.atkTarget.personComp.die == 0){
+                    this.atkTarget = null;
+                    return;
+                 }
                 this.bodyComp.playAttack();
              }else{
                 this.bodyComp.playMove();
@@ -99,7 +103,7 @@ cc.Class({
                 }else{
                     var has = false;
                     for (const one of targets) {
-                        if(one.name == self.atkTarget.name){
+                        if(one.heroName == self.atkTarget.heroName){
                             has == true;
                         }
                     }
@@ -116,9 +120,7 @@ cc.Class({
         if(this.atkRangedDistMin && this.atkRangedDistMax){
             if(this.atkTarget != null){
                 var flyer = cc.instantiate(this.flyer);
-                flyer.group = this.group;
-                cc.log(this.group);
-                cc.log(this.atkTarget.group);
+                flyer.group = this.node.group;
                 flyer.setPosition(cc.v2(0,0));
                 // flyer.setPosition(this.Canvas.convertToNodeSpace(flyer.getPosition()));
                 flyer.getComponent('flyerMove').damage = this.atkPoint;

@@ -621,7 +621,7 @@
       "__id__": 1
     },
     "_enabled": true,
-    "atkPoint": 10,
+    "atkPoint": 100,
     "speed": 1,
     "atkType": 1,
     "atkDist": 1,

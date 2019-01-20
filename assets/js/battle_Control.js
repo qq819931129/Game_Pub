@@ -320,11 +320,11 @@ cc.Class({
     	if (point == 10) { var item = this.perfabPool.createEnemy(); }
 		if (point == 11) { var item = this.perfabPool.createEnemy(); }
 		if(groupId == 1){
-			item.getComponent('person').group = GroupName.other
+			item.group =  GroupName.other;
 			this.other.addChild(item);
 		}
 		if(groupId == 2){
-			item.getComponent('person').group = GroupName.empty;
+			item.group = GroupName.empty;
 			this.enemy.addChild(item);
 		}
 		var x = this.batBox.getChildByName("batBox_y" + box.y + "_x" + box.x).x;
@@ -355,12 +355,13 @@ cc.Class({
 		if(groupId == 1){
 			this.other.getChildByName("hero_" + point).on(cc.Node.EventType.TOUCH_START, function ( event ) {
 				let selfItem = this;
-				//console.log(selfItem);
+				console.log("11111");
 				let self_x = event.getLocation().x;
 				let self_y = event.getLocation().y;
 				if (self.background.getChildByName("tempColl_touch")) { self.background.getChildByName("tempColl_touch").destroy();}//--------销毁之前生成的临时路线碰触点 
 				//---生成临时路线碰触点   如果不重新生成，会出现触碰点一直碰着相同格子没反应的问题，例如不断触碰起点，碰撞系统好像如果不离开碰触体，就不会重新算碰撞到
 				let tempColl_touch = cc.instantiate(self.Prefab_tempColl_touch);
+				
 				self.background.addChild(tempColl_touch);
 				tempColl_touch.setPosition(self_x,self_y);
 				self.background.getChildByName("tempColl_touch").getComponent("colliderListener").boxItem = null;//---初始化碰撞点上的格子对象
@@ -418,6 +419,7 @@ cc.Class({
 				let self_y = event.getLocation().y;
 				//console.log(heroRouteOkList.list,heroRouteOkList.name);
 				var boxItem = self.background.getChildByName("tempColl_touch").getComponent("colliderListener").boxItem;
+				cc.log(boxItem)
 				if (boxItem.name == "batBox_Center") {
 					boxItem = boxItem.parent.getComponent("batBox_basic");
 				}else{

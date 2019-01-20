@@ -12,7 +12,6 @@ cc.Class({
     },
     // use this for initialization
     onLoad: function () {
-        cc.log(this.node.group);
         //启用碰撞事件
         cc.director.getCollisionManager().enabled = true;
         // cc.director.getCollisionManager().enabledDebugDraw = true;
@@ -36,7 +35,7 @@ cc.Class({
         var bezierTo = cc.bezierTo(1, bezier);
 
         var action = cc.sequence(bezierTo,cc.callFunc(function(){
-            //this.node.active = false;
+            this.node.active = false;
         },this))
 
         this.node.runAction(action);

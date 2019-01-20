@@ -23,6 +23,7 @@ cc.Class({
         //cc.director.getCollisionManager().enabledDebugDraw = true;
         cc.director.getCollisionManager().enabledDrawBoundingBox = true;
         this.node.group = this.node.parent.group;
+        // cc.log(this.node.group);
     },
     attackOver: function () {
         if (this.parentCopm.atkTarget == null 
