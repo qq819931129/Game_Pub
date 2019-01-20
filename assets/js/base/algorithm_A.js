@@ -63,7 +63,7 @@ module.exports.getRangeEnemy = function(data){
 	let enemyList = [];
 	var minF = 0;
 	for (let i = 0; i < data.hero_list.length; i++) {
-		if (data.hero_list[i].groupId == 2) {
+		if (data.hero_list[i].groupId == 2 && data.hero_list[i].die == 1) {
 	    	let H_x = Math.abs(data.hero_list[i].x - data.startTarget.x);
 			let H_y = Math.abs(data.hero_list[i].y - data.startTarget.y);
 			let H = (H_x + H_y) * 10;

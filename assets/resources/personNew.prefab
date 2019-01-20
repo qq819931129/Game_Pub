@@ -324,23 +324,23 @@
     "points": [
       {
         "__type__": "cc.Vec2",
-        "x": -152.5,
-        "y": 40.5
+        "x": -182.5,
+        "y": -122.5
       },
       {
         "__type__": "cc.Vec2",
-        "x": -102.5,
-        "y": -100.5
+        "x": -182.5,
+        "y": 122.5
       },
       {
         "__type__": "cc.Vec2",
-        "x": 50.5,
-        "y": -100.5
+        "x": 182.5,
+        "y": 122.5
       },
       {
         "__type__": "cc.Vec2",
-        "x": 50,
-        "y": 42.5
+        "x": 182.5,
+        "y": -122.5
       }
     ]
   },
@@ -621,7 +621,7 @@
       "__id__": 1
     },
     "_enabled": true,
-    "atkPoint": 10,
+    "atkPoint": 100,
     "speed": 1,
     "atkType": 1,
     "atkDist": 1,
@@ -649,7 +649,9 @@
     "y": null,
     "point": null,
     "route": [],
-    "state": 10
+    "state": 10,
+    "findAtkTargetOff": true,
+    "init": false
   },
   {
     "__type__": "650daGV4EREUYHQ5l6OBC08",
