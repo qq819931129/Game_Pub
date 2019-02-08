@@ -65,31 +65,53 @@ cc.Class({
         this.atkDistMax = 1;//最大攻击距离
         this.atkRangedDistMin = 3;//远程攻击最小距离
         this.atkRangedDistMax = 3;//远程攻击最大距离
-
+        this.state = 10;//默认移动状态
         this.init = true;//初始化完毕表示
-
-        //定时寻敌
-        var self = this;
-        this.schedule(function(){
-            self.findAtkTargetInterval(self)
-        }, 0.5, 99999, 5);
+        
     },
     // called every frame, uncomment this function to activate update callback
-     update: function (dt) {
-         if(this.init == true){
-            if(this.atkTarget != null){
-                if(this.atkTarget.personComp.die == 0){
-                    this.atkTarget = null;
-                    return;
-                 }
-                this.bodyComp.playAttack();
-             }else{
-                this.bodyComp.playMove();
-             }
-         }
+    update: function (dt) {
+         
+    },
+    start:function(){
+        var self = this;
+        if(self.groupId == 1){
+            //索敌启动
+            this.findAtkTargetIntervalStart(self);
+            //检测敌人
+            this.checkAtkTargetIntervalStart(self);
+        }
+    },
+    checkAtkTargetIntervalStart:function(self){
+        self.schedule(function(){
+            self.checkAtkTargetInterval(self)
+        }, 0.3, 99999, 8);
+    },
+    findAtkTargetIntervalStart:function(self){
+        //定时寻敌
+        if(self.groupId == 1){
+            self.findAtkTargetOff = true;
+            self.schedule(function(){
+                self.findAtkTargetInterval(self)
+            }, 0.5, 99999, 5);
+        }else{
+            //敌人暂时不开启索敌
+            self.findAtkTargetOff = false;
+        }
+    },
+    checkAtkTargetInterval:function(self){
+        if(self.atkTarget != null){
+            if(self.enemyIsDie() == false){
+                self.state = 10;
+                self.bodyComp.playAttack();
+                return;
+            }
+        }
+        self.state = 11;
+        self.bodyComp.playMove();
     },
     findAtkTargetInterval:function(self){
-        if(self.findAtkTargetOff == true){
+        if(self.findAtkTargetOff == true && self.die == 1){//索敌开关 && 未死
             let targets = js_algorithm_A.getRangeEnemy({
                 startTarget:	self,
                 //endTarget:		self.batBox.getChildByName("batBox_y" + 3 + "_x" + 7).getComponent("batBox_basic"),
@@ -104,7 +126,7 @@ cc.Class({
                     var has = false;
                     for (const one of targets) {
                         if(one.heroName == self.atkTarget.heroName){
-                            has == true;
+                            has = true;
                         }
                     }
                     if(!has){
@@ -112,10 +134,14 @@ cc.Class({
                     }
                 }
             }
+            if(null != self.atkTarget){
+                cc.log(self.heroName + "--" + self.atkTarget.heroName);
+            }
         }else{
-            cc.log("索敌未开启");
+            cc.log(self.heroName + "--" + "索敌未开启");
         }
     },
+
     createFlyer:function(){
         if(this.atkRangedDistMin && this.atkRangedDistMax){
             if(this.atkTarget != null){
@@ -137,8 +163,7 @@ cc.Class({
         return !this.node.activeInHierarchy || this.die == 0 || this.allHP <= 0;
     },
     goDie: function () {
-        this.die = 0;
-        this.node.parent.active = false;
+        //this.node.parent.active = false;
         js_dataControl.setHeroDieByName(this.heroName);
     },
     damage: function(damagePoint){
@@ -153,6 +178,7 @@ cc.Class({
         if (this.atkTarget.allHP <= 0 ) {
             this.atkTarget.goDie();
             this.atkTarget = null;
+            cc.log("目标死亡/清空");
             return true;
         }else{
             return false;

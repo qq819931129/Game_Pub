@@ -30,7 +30,8 @@ module.exports.getHeroByName = function(name){
 module.exports.setHeroDieByName =function(name){
     for(let i=0;i<this.heroList.length;i++){
         if(this.heroList[i].heroName == name){
-            this.heroList[i].isDie = 0;
+            this.heroList[i].die = 0;
+            return;
         }
     }
 }
