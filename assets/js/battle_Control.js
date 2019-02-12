@@ -520,8 +520,11 @@ cc.Class({
 						heroList[j].route = checkRoute;
 						heroList[j].indexNum = 0;
 					}
+					
+					heroList[j].personComp.isCenter = false;
 					//英雄路线移动完毕后执行以下方法
 					if ((heroList[j].indexNum+1) == heroList[j].route.length) {
+						heroList[j].personComp.isCenter = true;
 						heroList[j].state = 10;
 					}
 					heroList[j].indexNum++;
