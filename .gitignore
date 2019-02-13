@@ -4,3 +4,5 @@ settings
 temp
 local
 library
+build/
+assets/.idea/

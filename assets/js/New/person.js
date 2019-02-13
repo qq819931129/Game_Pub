@@ -79,7 +79,7 @@ cc.Class({
             //索敌启动
             this.findAtkTargetIntervalStart(self);
             //检测敌人
-            this.checkAtkTargetIntervalStart(self);
+            //this.checkAtkTargetIntervalStart(self);
         }
     },
     checkAtkTargetIntervalStart:function(self){
