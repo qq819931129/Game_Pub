@@ -42,7 +42,9 @@ cc.Class({
 		route	: [],		//英雄移动路线   状态切换为移动时，赋值路线
         state	: 10,		//英雄状态   10：静止，11：移动
         findAtkTargetOff:true,
-        init : false
+        init : false,
+        isCenter : true, //是否站在中心点
+        isAuto : false //是否自动索敌攻击
     },
 
     // use this for initialization
@@ -100,14 +102,15 @@ cc.Class({
         }
     },
     checkAtkTargetInterval:function(self){
-        if(self.atkTarget != null){
+        //攻击目标不为空 and 站在格子中间 and 自动的
+        if(self.atkTarget != null && this.personComp.isCenter == true){
             if(self.enemyIsDie() == false){
                 self.state = 10;
                 self.bodyComp.playAttack();
                 return;
             }
         }
-        self.state = 11;
+        //self.state = 11;
         self.bodyComp.playMove();
     },
     findAtkTargetInterval:function(self){
@@ -163,8 +166,17 @@ cc.Class({
         return !this.node.activeInHierarchy || this.die == 0 || this.allHP <= 0;
     },
     goDie: function () {
-        //this.node.parent.active = false;
+        this.node.active = false;
         js_dataControl.setHeroDieByName(this.heroName);
+        let box = js_dataControl.getBatBoxList().children;
+        //cc.log(box);
+        for (let x = 0; x < box.length; x++) {
+            var batItem = box[x].getComponent("batBox_basic");
+            if(batItem.x == this.personComp.x && batItem.y == this.personComp.y){
+                batItem.bat_hero = {point:null,groupId:null};
+                cc.log(batItem.bat_hero)
+            }
+        }
     },
     damage: function(damagePoint){
         this.allHP = this.allHP - damagePoint;
