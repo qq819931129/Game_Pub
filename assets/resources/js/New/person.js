@@ -79,17 +79,19 @@ cc.Class({
         var self = this;
         if(self.groupId == 1){
             //索敌启动
-            this.findAtkTargetIntervalStart(self);
+            this.findAtkTargetIntervalStart();
             //检测敌人
-            this.checkAtkTargetIntervalStart(self);
+            this.checkAtkTargetIntervalStart();
         }
     },
-    checkAtkTargetIntervalStart:function(self){
+    checkAtkTargetIntervalStart:function(){
+        var self = this;
         self.schedule(function(){
             self.checkAtkTargetInterval(self)
         }, 0.3, 99999, 8);
     },
-    findAtkTargetIntervalStart:function(self){
+    findAtkTargetIntervalStart:function(){
+        var self = this;
         //定时寻敌
         if(self.groupId == 1){
             self.findAtkTargetOff = true;
