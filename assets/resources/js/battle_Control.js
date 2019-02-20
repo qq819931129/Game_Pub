@@ -59,6 +59,10 @@ cc.Class({
             default: null,
             type: cc.Prefab
         },
+        icon_cloud: {
+            default: null,
+            type: cc.Prefab
+        },
         followSpeed: 1
     },
     onLoad: function () {
@@ -547,7 +551,6 @@ cc.Class({
 					//改变英雄面向的方向动画
 					for (let i = 0; i < directionList.length; i++) {
 						if(heroNextRoute && (directionList[i].x + heroList[j].x) == heroNextRoute.x && (directionList[i].y + heroList[j].y) == heroNextRoute.y){
-							console.log(directionList[i]);
 							switch(directionList[i].direction){//这里以后放各种方向的动画an就行了
 								case 1:
 									heroList[j].body.scaleX = 1;
@@ -594,19 +597,24 @@ cc.Class({
 					fogTempList_first.push.apply(fogTempList_first,fogList);
 					//把英雄视野加入
 					for (let x = 0; x < heroList.length; x++) {
-						for (let i = 0; i < directionList.length; i++) {
-							let tempItem = {y:heroList[x].y + directionList[i].y, x:heroList[x].x + directionList[i].x};
-							let fogTempList_second = [];
-							for (let z = 0; z < fogList.length; z++) {
-								if(fogList[z].x != tempItem.x && fogList[z].y != tempItem.y){
-									fogTempList_second.push(tempItem);
-									break;
+						if(heroList[x].groupId == 1){
+							for (let i = 0; i < directionList.length; i++) {
+								let tempItem = {y:heroList[x].y + directionList[i].y, x:heroList[x].x + directionList[i].x};
+								let fogTempList_second = [];
+								if(i == 0){
+									fogTempList_second.push({y:heroList[x].y, x:heroList[x].x});
 								}
+								for (let z = 0; z < fogList.length; z++) {
+									if(fogList[z].x != tempItem.x && fogList[z].y != tempItem.y){
+										fogTempList_second.push(tempItem);
+										break;
+									}
+								}
+								fogTempList_first.push.apply(fogTempList_first,fogTempList_second);
 							}
-							fogTempList_first.push.apply(fogTempList_first,fogTempList_second);
 						}
 					}
-					//cc.log(fogTempList_first)
+					cc.log(fogTempList_first)
 					//把英雄技能特效有提供视野的也补在上面数组里即可
 					//重置战场全部视野根据上面数组
 					for (let x = 0; x < self.batlist.length; x++) {
@@ -622,7 +630,20 @@ cc.Class({
 							}
 						}
 					}
-					//cc.log(self.batlist)
+					cc.log(self.batlist)
+					for (let x = 0; x < self.batlist.length; x++) {
+						let boxItem = self.batlist[x];
+						let fog = boxItem.getChildByName("fog");
+						if (fog) { fog.destroy(); }//--------------------------------------------------------------销毁迷雾云资源
+					}
+					for (let x = 0; x < self.batlist.length; x++) {
+						let boxItem = self.batlist[x];
+						if(boxItem.bat_fog.point == 1){
+							let item = cc.instantiate(self.icon_cloud); 
+							boxItem.addChild(item);
+					    	item.name = "fog";
+						}
+					}
 				}
 			}
 		}

@@ -5,7 +5,7 @@
   "wrapMode": "clamp",
   "filterMode": "bilinear",
   "subMetas": {
-    "maskCloud": {
+    "icon-cloud": {
       "ver": "1.0.3",
       "uuid": "4edd345b-e6ba-4a05-badc-18f07d0c1c37",
       "rawTextureUuid": "f3f8df1a-9013-4445-bb41-4314a536a91a",
