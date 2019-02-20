@@ -81,7 +81,7 @@ cc.Class({
             //索敌启动
             this.findAtkTargetIntervalStart(self);
             //检测敌人
-            //this.checkAtkTargetIntervalStart(self);
+            this.checkAtkTargetIntervalStart(self);
         }
     },
     checkAtkTargetIntervalStart:function(self){
@@ -190,6 +190,7 @@ cc.Class({
         if (this.atkTarget.allHP <= 0 ) {
             this.atkTarget.goDie();
             this.atkTarget = null;
+            cc.director.loadScene("checkPoint");
             cc.log("目标死亡/清空");
             return true;
         }else{

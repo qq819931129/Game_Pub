@@ -4,8 +4,8 @@ module.exports.getAttPos_list = function(data,type){
 	let attPos_list = [];//-------------可攻击的格子位置数组
 	//攻击范围公式数组
 	let directionList = [[{y:0,x:1},{y:-1,x:0},{y:0,x:-1},{y:1,x:0}],
-	[{y:0,x:2},{y:-1,x:1},{y:-2,x:0},{y:-1,x:-1},{y:0,x:-2},{y:1,x:-1},{y:2,x:0},{y:1,x:1}],
-	[{y:0,x:3},{y:-1,x:2},{y:-2,x:1},{y:-3,x:0},{y:-2,x:-1},{y:-1,x:-2},{y:0,x:-3},{y:1,x:-2},{y:2,x:-1},{y:3,x:0},{y:2,x:1},{y:1,x:2}]
+	[{y:0,x:1},{y:-1,x:0},{y:0,x:-1},{y:1,x:0},  {y:0,x:2},{y:-1,x:1},{y:-2,x:0},{y:-1,x:-1},{y:0,x:-2},{y:1,x:-1},{y:2,x:0},{y:1,x:1}],
+	[{y:0,x:2},{y:-1,x:1},{y:-2,x:0},{y:-1,x:-1},{y:0,x:-2},{y:1,x:-1},{y:2,x:0},{y:1,x:1},    {y:0,x:3},{y:-1,x:2},{y:-2,x:1},{y:-3,x:0},{y:-2,x:-1},{y:-1,x:-2},{y:0,x:-3},{y:1,x:-2},{y:2,x:-1},{y:3,x:0},{y:2,x:1},{y:1,x:2}]
 	];
 	if(data.heroItem.atkType == 3){//--直角类型处理，后续再加
 		let attMaxList = module.exports.getAtkRangedMax(data.heroItem);
@@ -42,7 +42,6 @@ module.exports.getAtkRangedMax = function(target){
 //获取原点目标在最终目标 最近的可攻击的格子位置  data数组---看A*算法注释
 module.exports.getAttPos = function(data){
 	let attPos_list = module.exports.getAttPos_list(data,1);
-	console.log(attPos_list);
 	for (let i = 0; i < attPos_list.length; i++) {
 		let tempCheckTarget = data.batBox.getChildByName("batBox_y" + (attPos_list[i].y) + "_x" + (attPos_list[i].x));
 		if (tempCheckTarget) {//----------是否存在格子

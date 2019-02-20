@@ -87,7 +87,8 @@ cc.Class({
     	this.isState = 0;
     	this.isOOOK = 1;
     	this.indexNum = 0;
-    	
+    	cc.game.algorithmList = {}//-----------定义算法数组集合
+    	cc.game.algorithmList.directionList = [{y:0,x:1,direction:1},{y:-1,x:1,direction:2},{y:-1,x:0,direction:3},{y:-1,x:-1,direction:4},{y:0,x:-1,direction:5},{y:1,x:-1,direction:6},{y:1,x:0,direction:7},{y:1,x:1,direction:8}];
     	this.checkId = js_dataControl.getcheckId();//-------获取关卡id
 		for (let i = 0; i < this.batlist.length; i++) {
 			var batItem = this.batlist[i].getComponent("batBox_basic");
@@ -240,7 +241,7 @@ cc.Class({
 			let heroList = self.hero_list;
 			for (let j = 0; j < heroList.length; j++) {//---------匹配英雄表
 				//if (heroList[j].groupId == 1) {
-				if (heroList[j].heroName == "hero_6") {
+				if (heroList[j].heroName == "hero_1") {
 					//根据自身攻击范围搜索最近敌人
 					/*let checkRoute = js_algorithm_A.getRangeEnemy({
 						startTarget:	heroList[j],
@@ -250,17 +251,17 @@ cc.Class({
 					});
 					console.log(checkRoute);*/
 					//根据自身为出发点搜索最近敌人
-					let checkRoute = js_algorithm_A.getNearEnemy({
+					/*let checkRoute = js_algorithm_A.getNearEnemy({
 						startTarget:	heroList[j],
 						batBox:			self.batBox,
 						hero_list:		self.hero_list,
 						heroItem:		heroList[j]
 					});
-					console.log(checkRoute);
+					console.log(checkRoute);*/
 					//A*算法
-					/*let checkRoute = js_algorithm_A.routeDirection({
+					let checkRoute = js_algorithm_A.routeDirection({
 						startTarget:	heroList[j],
-						endTarget:		self.batBox.getChildByName("batBox_y" + 3 + "_x" + 7).getComponent("batBox_basic"),
+						endTarget:		self.batBox.getChildByName("batBox_y" + 3 + "_x" + 8).getComponent("batBox_basic"),
 						batBox:			self.batBox,
 						hero_list:		self.hero_list,
 						heroItem:		heroList[j]
@@ -268,12 +269,11 @@ cc.Class({
 					console.log(checkRoute);
 					heroList[j].route = checkRoute;
 					heroList[j].state = 11;
-					heroList[j].indexNum = 0;*/
+					heroList[j].indexNum = 0;
 					
 					//self.matchOKHeroRoute(heroList[j].name,self.getNearEnemy(heroList[j],heroList));//-------传参英雄名和格子对象给确认数组
 					//console.log(heroList[j],checkRoute,self.getNearEnemy(heroList[j],heroList));
 				}
-				
 			}
 			
 		});
@@ -442,7 +442,7 @@ cc.Class({
 								//console.log(444);
 								if(heroRouteOkList.lastId != boxItem.batBoxName){//----------当前触碰的格子不是上一次记录的格子（此判断为了防止不断触碰相同格子一直执行以下方法）
 									//console.log(555);
-									self.matchOKHeroRoute(heroRouteOkList.name,boxItem);//-------传参英雄名和格子对象给确认数组
+									self.matchOKHeroRoute(selfItem.name,boxItem);//-------传参英雄名和格子对象给确认数组
 								}
 							}
 						}
@@ -450,9 +450,25 @@ cc.Class({
 				}
 			});
 			this.other.getChildByName("hero_" + point).on(cc.Node.EventType.TOUCH_CANCEL, function ( event ) {
+				let selfItem = this;
 				let self_x = event.getLocation().x;
 				let self_y = event.getLocation().y;
-				//console.log(heroRouteOkList.list,heroRouteOkList.name);
+				var boxItem = self.background.getChildByName("tempColl_touch").getComponent("colliderListener").boxItem;
+				if (boxItem.name == "batBox_Center") {
+					boxItem = boxItem.parent.getComponent("batBox_basic");
+				}else{
+					boxItem = boxItem.getComponent("batBox_basic");
+				}
+				if(boxItem.bat_hero.groupId != 2){//-----------------------------松手时也要检测松手位置的格子上是否有敌人，有就不再加入路线
+					self.matchOKHeroRoute(selfItem.name,boxItem);//-------传参英雄名和格子对象给确认数组，有时越墙后也能填补后续路线
+				}
+				self.touchStop(boxItem);
+			});
+			this.other.getChildByName("hero_" + point).on(cc.Node.EventType.TOUCH_END, function ( event ) {
+				let selfItem = this;
+				let self_x = event.getLocation().x;
+				let self_y = event.getLocation().y;
+				console.log(heroRouteOkList.list,heroRouteOkList.name);
 				var boxItem = self.background.getChildByName("tempColl_touch").getComponent("colliderListener").boxItem;
 				cc.log(boxItem)
 				if (boxItem.name == "batBox_Center") {
@@ -461,21 +477,7 @@ cc.Class({
 					boxItem = boxItem.getComponent("batBox_basic");
 				}
 				if(boxItem.bat_hero.groupId != 2){//-----------------------------松手时也要检测松手位置的格子上是否有敌人，有就不再加入路线
-					self.matchOKHeroRoute(heroRouteOkList.name,boxItem);//-------传参英雄名和格子对象给确认数组，有时越墙后也能填补后续路线
-				}
-				self.touchStop(boxItem);
-			});
-			this.other.getChildByName("hero_" + point).on(cc.Node.EventType.TOUCH_END, function ( event ) {
-				let self_x = event.getLocation().x;
-				let self_y = event.getLocation().y;
-				var boxItem = self.background.getChildByName("tempColl_touch").getComponent("colliderListener").boxItem;
-				if (boxItem.name == "batBox_Center") {
-					boxItem = boxItem.parent.getComponent("batBox_basic");
-				}else{
-					boxItem = boxItem.getComponent("batBox_basic");
-				}
-				if(boxItem.bat_hero.groupId != 2){//-----------------------------松手时也要检测松手位置的格子上是否有敌人，有就不再加入路线
-					self.matchOKHeroRoute(heroRouteOkList.name,boxItem);//-------传参英雄名和格子对象给确认数组，有时越墙后也能填补后续路线
+					self.matchOKHeroRoute(selfItem.name,boxItem);//-------传参英雄名和格子对象给确认数组，有时越墙后也能填补后续路线
 				}
 				self.touchStop(boxItem);
 			});
@@ -498,6 +500,8 @@ cc.Class({
 				if (sum <= 1 && heroList[j].indexNum < heroList[j].route.length) {//-----------------向量测出英雄和下一个格子中心在1范围内就进入下一个路线
 					heroList[j].x = targetBoxItem.getComponent("batBox_basic").x;//----------------------------------------英雄当前x轴修改
 					heroList[j].y = targetBoxItem.getComponent("batBox_basic").y;//----------------------------------------英雄当前y轴修改
+					let directionList = cc.game.algorithmList.directionList;
+					let heroNextRoute = heroList[j].route[heroList[j].indexNum+1];
 					js_dataControl.updateHeroList(heroList);//----------------更新存储数据层js的英雄详细数组
 					if (heroList[j].route[heroList[j].indexNum-1]) {//清除当前移动对象上一步格子里的标识
 						var oldItem = self.batBox.getChildByName("batBox_y" + heroList[j].route[heroList[j].indexNum-1].y + "_x" + heroList[j].route[heroList[j].indexNum-1].x).getComponent("batBox_basic");
@@ -511,13 +515,16 @@ cc.Class({
 							groupId:	heroList[j].groupId
 						}
 					}
-					if(heroList[j].route[heroList[j].indexNum+1] && self.batBox.getChildByName("batBox_y" + heroList[j].route[heroList[j].indexNum+1].y + "_x" + heroList[j].route[heroList[j].indexNum+1].x).getComponent("batBox_basic").bat_hero.groupId == 2){
+					//检测预路线上是否有敌人，执行部分处理
+					if(heroNextRoute && self.batBox.getChildByName("batBox_y" + heroNextRoute.y + "_x" + heroNextRoute.x).getComponent("batBox_basic").bat_hero.groupId == 2){
 						for (var i = 0; i < heroList.length; i++) {
-							if(heroList[i].point == heroList[j].lockTarget.point && heroList[i].groupId == heroList[j].lockTarget.groupId){
+							if(heroList[i].point == heroList[j].lockTarget.point && heroList[i].groupId == heroList[j].lockTarget.groupId){//------有锁定目标，就重跑锁定目标为终点的路线
+								var endTarget = self.batBox.getChildByName("batBox_y" + heroList[i].y + "_x" + heroList[i].x).getComponent("batBox_basic");
+							}else{//---------------------------------------------------------------------------------------------------------------没有锁定目标，就拿当前阻挡目标为终点的路线
 								var endTarget = self.batBox.getChildByName("batBox_y" + heroList[i].y + "_x" + heroList[i].x).getComponent("batBox_basic");
 							}
 						}
-						console.log(heroList[j].groupId,endTarget);
+						//console.log(heroList[j].groupId,endTarget);
 						let checkRoute = js_algorithm_A.routeDirection({
 							startTarget:	self.batBox.getChildByName("batBox_y" + heroList[j].y + "_x" + heroList[j].x).getComponent("batBox_basic"),
 							endTarget:		endTarget,
@@ -525,7 +532,7 @@ cc.Class({
 							hero_list:		self.hero_list,
 							heroItem:		heroList[j]
 						});
-						console.log(checkRoute);
+						//console.log(checkRoute);
 						heroList[j].route = checkRoute;
 						heroList[j].indexNum = 0;
 					}
@@ -537,6 +544,49 @@ cc.Class({
 						heroList[j].state = 10;
 					}
 					heroList[j].indexNum++;
+					//改变英雄面向的方向动画
+					for (let i = 0; i < directionList.length; i++) {
+						if(heroNextRoute && (directionList[i].x + heroList[j].x) == heroNextRoute.x && (directionList[i].y + heroList[j].y) == heroNextRoute.y){
+							console.log(directionList[i]);
+							switch(directionList[i].direction){//这里以后放各种方向的动画an就行了
+								case 1:
+									heroList[j].body.scaleX = 1;
+									heroList[j].body.setRotation(0);
+									break;
+								case 2:
+									heroList[j].body.scaleX = 1;
+									heroList[j].body.setRotation(45);
+									break;
+								case 3:
+									heroList[j].body.scaleX = 1;
+									heroList[j].body.setRotation(90);
+									break;
+								case 4:
+									heroList[j].body.scaleX = -1;
+									heroList[j].body.setRotation(-45);
+									break;
+								case 5:
+									heroList[j].body.scaleX = -1;
+									heroList[j].body.setRotation(0);
+									break;
+								case 6:
+									heroList[j].body.scaleX = -1;
+									heroList[j].body.setRotation(45);
+									break;
+								case 7:
+									heroList[j].body.scaleX = 1;
+									heroList[j].body.setRotation(270);
+									break;
+								case 8:
+									heroList[j].body.scaleX = 1;
+									heroList[j].body.setRotation(-45);
+									break;
+								default:
+									console.log("方向不明，出错！");
+							}
+							
+						}
+					}
 					
 					//迷雾刷新
 					let fogList = self.fogList;
@@ -544,7 +594,6 @@ cc.Class({
 					fogTempList_first.push.apply(fogTempList_first,fogList);
 					//把英雄视野加入
 					for (let x = 0; x < heroList.length; x++) {
-						let directionList = [{y:0,x:1,direction:1},{y:-1,x:1,direction:2},{y:-1,x:0,direction:3},{y:-1,x:-1,direction:4},{y:0,x:-1,direction:5},{y:1,x:-1,direction:6},{y:1,x:0,direction:7},{y:1,x:1,direction:8}];
 						for (let i = 0; i < directionList.length; i++) {
 							let tempItem = {y:heroList[x].y + directionList[i].y, x:heroList[x].x + directionList[i].x};
 							let fogTempList_second = [];
@@ -557,7 +606,7 @@ cc.Class({
 							fogTempList_first.push.apply(fogTempList_first,fogTempList_second);
 						}
 					}
-					cc.log(fogTempList_first)
+					//cc.log(fogTempList_first)
 					//把英雄技能特效有提供视野的也补在上面数组里即可
 					//重置战场全部视野根据上面数组
 					for (let x = 0; x < self.batlist.length; x++) {
@@ -573,7 +622,7 @@ cc.Class({
 							}
 						}
 					}
-					cc.log(self.batlist)
+					//cc.log(self.batlist)
 				}
 			}
 		}
@@ -593,13 +642,13 @@ cc.Class({
 		for (let z = 0; z < heroRouteOkList.list.length; z++) {
 			self.currentBox_destroy(heroRouteOkList.list[z]);//--------------------------销毁高亮资源方法
 		}
-		console.log(boxItem,heroRouteOkList);
+		//console.log(boxItem,heroRouteOkList);
 		
     	if (heroRouteOkList.list.length != 0) {
 			let heroList = self.hero_list;
 			for (let j = 0; j < heroList.length; j++) {//---------匹配英雄表
 				if(heroList[j].heroName == heroRouteOkList.name){//--------------找出赋值英雄移动数组
-					console.log(12111);
+					//console.log(12111);
 					heroList[j].state = 11;//------------------------------------英雄状态切换为：移动
 					heroList[j].route = heroRouteOkList.list;//------------------赋值路线
 					heroList[j].indexNum = 0;//----------------------------------初始化移动路线的到达位置
